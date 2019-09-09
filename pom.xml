@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jasonfitch.tools</groupId>
-    <artifactId>logfetcher</artifactId>
+    <artifactId>log-extractor</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
