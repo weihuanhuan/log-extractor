@@ -1,5 +1,6 @@
 package writer;
 
+import java.util.logging.Logger;
 import org.apache.poi.ss.util.CellRangeAddress;
 import result.Result;
 import result.StatisticResult;
@@ -23,21 +24,7 @@ public class XLSWriter {
 
     static private String EXCEL_FILENAME = "exception-statistic";
 
-
     public static void write(List<Result> results, String outDir, int matchLength) throws IOException {
-
-        //按时间生成表格文件名后缀
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-        String date = df.format(new Date());
-
-
-        //避免处理太快时后者覆盖前者数据
-        String excelFilePath = outDir + "/" + EXCEL_FILENAME + "-" + date + EXCEL_SUFFIX;
-        File excelFile = new File(excelFilePath);
-        int avoidConflict = 0;
-        while (excelFile.exists()) {
-            excelFile = new File(excelFilePath.replace(EXCEL_SUFFIX, "-" + ++avoidConflict + EXCEL_SUFFIX));
-        }
 
         //创建一个excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
@@ -51,9 +38,14 @@ public class XLSWriter {
             //创建一个sheet
             XSSFSheet sheet = wb.createSheet(file.getName());
 
+            //设置第columnIndex列的列宽，单位为字符宽度的1/256,
+            // 注意 Excel 的最大列宽255
+            if ((matchLength + 20) > 255) {
+                sheet.setColumnWidth(0, (255) << 8);
+            } else {
+                sheet.setColumnWidth(0, (matchLength + 20) << 8);
+            }
 
-            //设置第columnIndex列的列宽，单位为字符宽度的1/256
-            sheet.setColumnWidth(0, (matchLength + 20) << 8);
             sheet.setColumnWidth(1, 20 << 8);
             sheet.setAutoFilter(CellRangeAddress.valueOf("B1:B500"));
 
@@ -81,6 +73,33 @@ public class XLSWriter {
                 dataRow.createCell(0).setCellValue(key);
                 dataRow.createCell(1).setCellValue(value);
             }
+        }
+
+
+        //按时间生成表格文件名后缀
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        String date = df.format(new Date());
+
+
+        //避免处理太快时后者覆盖前者数据
+        String excelFilePath = outDir + "/" + EXCEL_FILENAME + "-" + date + EXCEL_SUFFIX;
+        File excelFile = new File(excelFilePath);
+        int avoidConflict = 0;
+        while (excelFile.exists()) {
+            excelFile = new File(excelFilePath.replace(EXCEL_SUFFIX, "-" + ++avoidConflict + EXCEL_SUFFIX));
+        }
+
+        //判断输出文件的父目录情况
+        File parentFile = excelFile.getParentFile();
+        try {
+            if (parentFile.exists() && parentFile.isFile()) {
+                System.out.println("There is a " + parentFile + ", it's a file instead of a directory!");
+            }
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+        } catch (Exception e) {
+            throw e;
         }
 
         try {
