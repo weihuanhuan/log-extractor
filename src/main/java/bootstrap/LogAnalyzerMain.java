@@ -2,6 +2,7 @@ package bootstrap;
 
 import analyzer.Analyzer;
 import analyzer.BESAnalyzer;
+import analyzer.ExceptionAnalyzer;
 import analyzer.WebLogicAnalyzer;
 import analyzer.WebLogicAnalyzer2;
 import result.Result;
@@ -105,6 +106,8 @@ public class LogAnalyzerMain {
             analyzer = new WebLogicAnalyzer(logFileList, logEncoding, matchLength);
         } else if (logType.equalsIgnoreCase("weblogic2")) {
             analyzer = new WebLogicAnalyzer2(logFileList, logEncoding, matchLength);
+        } else if (logType.equalsIgnoreCase("exception")) {
+            analyzer = new ExceptionAnalyzer(logFileList, logEncoding, matchLength);
         } else {
             throw new Exception("Invalid log type, please check it !");
         }

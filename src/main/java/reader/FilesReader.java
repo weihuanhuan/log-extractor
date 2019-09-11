@@ -14,7 +14,7 @@ import util.Utils;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class FilesReader {
+public class FilesReader implements Reader {
 
     private Mark current;
     private String currentFilePath;
@@ -32,7 +32,7 @@ public class FilesReader {
         this.encoding = encoding;
     }
 
-
+    @Override
     public void addFile(String fname) {
         logFiles.offer(new File(fname));
     }

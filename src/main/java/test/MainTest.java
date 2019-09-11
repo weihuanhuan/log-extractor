@@ -32,16 +32,20 @@ public class MainTest {
         String[] args8 = new String[]{"-t", "weblogic", "-f", "0906/web/ncrmweb0501_10.32.216.121_CrmMaster01.out.20190906"};
         String[] args9 = new String[]{"-t", "weblogic", "-f", "0906/web/ncrmweb0501_10.32.216.121_CrmSlave02.out.20190906"};
 
+        //exception
+        String[] args10 = new String[]{"-t", "exception", "-f", "./0906/guanli/server.log", "-n", "100"};
+
         List<String[]> argsList = new LinkedList<>();
-        argsList.add(args1);
-        argsList.add(args2);
-        argsList.add(args3);
-        argsList.add(args4);
-        argsList.add(args5);
-        argsList.add(args6);
-        argsList.add(args7);
-        argsList.add(args8);
-        argsList.add(args9);
+//        argsList.add(args1);
+//        argsList.add(args2);
+//        argsList.add(args3);
+//        argsList.add(args4);
+//        argsList.add(args5);
+//        argsList.add(args6);
+//        argsList.add(args7);
+//        argsList.add(args8);
+//        argsList.add(args9);
+        argsList.add(args10);
 
         for (String[] arg : argsList) {
             System.out.println("############################################################################");

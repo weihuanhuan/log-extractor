@@ -22,4 +22,6 @@ public class Constants {
 
     public static String DEFAULT_LOG_FILED_SEPARATOE = "|";
 
+    public static String CHARSET_NAME_ISO_8859_1 = "ISO-8859-1";
+
 }

@@ -1,6 +1,5 @@
 package writer;
 
-import java.util.logging.Logger;
 import org.apache.poi.ss.util.CellRangeAddress;
 import result.Result;
 import result.StatisticResult;
@@ -75,11 +74,9 @@ public class XLSWriter {
             }
         }
 
-
         //按时间生成表格文件名后缀
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
         String date = df.format(new Date());
-
 
         //避免处理太快时后者覆盖前者数据
         String excelFilePath = outDir + "/" + EXCEL_FILENAME + "-" + date + EXCEL_SUFFIX;
