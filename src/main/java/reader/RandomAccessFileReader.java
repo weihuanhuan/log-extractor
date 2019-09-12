@@ -11,10 +11,13 @@ import util.Constants;
 /**
  * Created by JasonFitch on 9/11/2019.
  */
-public class RandomFileReader implements Reader {
+public class RandomAccessFileReader implements FileReader {
 
-    private int lineNo;
-    private boolean nextAddLine = true;
+    private static int DEFAULT_LINE_NO = 0;
+    private static boolean DEFAULT_NEXT_ADD_LINE = true;
+
+    private int lineNo = DEFAULT_LINE_NO;
+    private boolean nextAddLine = DEFAULT_NEXT_ADD_LINE;
 
     private String currentFilePath;
     private RandomAccessFile randomAccessFile;
@@ -22,11 +25,11 @@ public class RandomFileReader implements Reader {
     private String encoding;
     private Queue<File> logFiles = new LinkedList<>();
 
-    public RandomFileReader() {
-        this.encoding = Constants.DEFAULT_LOG_ENCODING;
+    public RandomAccessFileReader() {
+        this(Constants.DEFAULT_LOG_ENCODING);
     }
 
-    public RandomFileReader(String encoding) {
+    public RandomAccessFileReader(String encoding) {
         this.encoding = encoding;
     }
 
@@ -38,25 +41,26 @@ public class RandomFileReader implements Reader {
     public void parseFile(String fname, String encoding) throws ParserException {
         try {
             randomAccessFile = new RandomAccessFile(fname, "r");
-            System.out.println("###################################" + currentFilePath);
-            System.out.println("###################################" + randomAccessFile.length());
         } catch (Exception ex) {
             throw new ParserException(ex);
         }
     }
 
-    public boolean hasMoreData() throws IOException {
-        if (randomAccessFile == null) {
-            lineNo = 0;
-            nextAddLine = true;
-            currentFilePath = logFiles.poll().getCanonicalPath();
-            try {
+    @Override
+    public boolean hasMoreInput() throws ParserException {
+        try {
+            //已经处理完一个文件,检查下一个文件
+            if (randomAccessFile == null) {
+                lineNo = DEFAULT_LINE_NO;
+                nextAddLine = DEFAULT_NEXT_ADD_LINE;
+                currentFilePath = logFiles.poll().getCanonicalPath();
                 parseFile(currentFilePath, encoding);
-            } catch (ParserException e) {
+            }
+            //当前处理的文件
+            if (randomAccessFile.getFilePointer() >= randomAccessFile.length()) {
                 return false;
             }
-        }
-        if (randomAccessFile.getFilePointer() >= randomAccessFile.length()) {
+        } catch (Exception e) {
             return false;
         }
         return true;
@@ -64,8 +68,8 @@ public class RandomFileReader implements Reader {
 
 
     public String readNextLine() throws ParserException, IOException {
-        String result = "";
-        if (!hasMoreData()) {
+        String result = null;
+        if (!hasMoreInput()) {
             return result;
         }
 
@@ -88,8 +92,8 @@ public class RandomFileReader implements Reader {
 
 
     public String readStringBytes(int n) throws IOException, ParserException {
-        String result = "";
-        if (!hasMoreData()) {
+        String result = null;
+        if (!hasMoreInput()) {
             return result;
         }
 
@@ -100,7 +104,7 @@ public class RandomFileReader implements Reader {
 
             String replaceAll = result.replaceAll("\\n", "");
             int countLF = result.length() - replaceAll.length();
-            if (countLF != 0 && !result.endsWith("\n")) {
+            if (countLF > 0 && !result.endsWith("\n")) {
                 ++countLF;
                 nextAddLine = false;
             } else {
@@ -133,8 +137,8 @@ public class RandomFileReader implements Reader {
 
             String replaceAll = back.replaceAll("\\n", "");
             int countLF = back.length() - replaceAll.length();
-            if (countLF != 0 && !back.endsWith("\n")) {
-                ++countLF;
+            if (countLF > 0 && !back.endsWith("\n")) {
+                --countLF;
                 nextAddLine = false;
             } else {
                 nextAddLine = true;

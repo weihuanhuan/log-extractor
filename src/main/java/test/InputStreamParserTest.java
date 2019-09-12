@@ -16,7 +16,7 @@ import java.io.PrintStream;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class ParserTest {
+public class InputStreamParserTest {
 
     public static void main(String[] args) throws IOException {
 

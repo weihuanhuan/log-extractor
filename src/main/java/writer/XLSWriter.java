@@ -19,84 +19,66 @@ import java.util.Map;
 
 public class XLSWriter {
 
+    static private int EXCEL_MAX_COLUMN_WIDTH = 255;
     static private String EXCEL_SUFFIX = ".xlsx";
 
     static private String EXCEL_FILENAME = "exception-statistic";
 
-    public static void write(List<Result> results, String outDir, int matchLength) throws IOException {
+    public static void write(Result result, File outDir, int matchLength) throws IOException {
+
+        StatisticResult realResult = (StatisticResult) result;
+        String fileNamePath = realResult.getFileNamePath();
+        File file = new File(fileNamePath);
 
         //创建一个excel文件
         XSSFWorkbook wb = new XSSFWorkbook();
 
-        for (Result result : results) {
-            StatisticResult realResult = (StatisticResult) result;
+        //创建一个sheet
+        XSSFSheet sheet = wb.createSheet(file.getName());
 
-            String fileNamePath = realResult.getFileNamePath();
-            File file = new File(fileNamePath);
+        //设置第columnIndex列的列宽，单位为字符宽度的1/256,
+        // 注意 Excel 的最大列宽255
+        int keyWidth = matchLength + 64;
+        int countWidth = 10;
+        if (keyWidth > EXCEL_MAX_COLUMN_WIDTH) {
+            sheet.setColumnWidth(0, EXCEL_MAX_COLUMN_WIDTH << 8);
+        } else {
+            sheet.setColumnWidth(0, keyWidth << 8);
+        }
+        sheet.setColumnWidth(1, countWidth << 8);
 
-            //创建一个sheet
-            XSSFSheet sheet = wb.createSheet(file.getName());
+        //表头定义
+        XSSFRow headRow = sheet.createRow(0);
+        List<String> heads = new ArrayList<>();
+        heads.add("Exception Key");
+        heads.add("Occur Count");
 
-            //设置第columnIndex列的列宽，单位为字符宽度的1/256,
-            // 注意 Excel 的最大列宽255
-            if ((matchLength + 20) > 255) {
-                sheet.setColumnWidth(0, (255) << 8);
-            } else {
-                sheet.setColumnWidth(0, (matchLength + 20) << 8);
-            }
+        //填充表格头信息
+        for (int i = 0; i < heads.size(); i++) {
+            String value = heads.get(i);
+            headRow.createCell(i).setCellValue(value);
+        }
 
-            sheet.setColumnWidth(1, 20 << 8);
-            sheet.setAutoFilter(CellRangeAddress.valueOf("B1:B500"));
-
-            XSSFRow headRow = sheet.createRow(0);
-
-            //表头定义
-            List<String> heads = new ArrayList<>();
-            heads.add("Exception Key");
-            heads.add("Occur Count");
-
-            //填充表格头信息
-            for (int i = 0; i < heads.size(); i++) {
-                String value = heads.get(i);
-                headRow.createCell(i).setCellValue(value);
-            }
-
-            //填充每一个数据行
-            int dataIndex = 1;
-            List<Map.Entry<String, Integer>> accumulator = realResult.getAccumulator().getSortedDataList();
-            for (Iterator<Map.Entry<String, Integer>> it = accumulator.iterator(); it.hasNext(); ) {
-                Map.Entry<String, Integer> entry = it.next();
-                String key = entry.getKey();
-                Integer value = entry.getValue();
-                XSSFRow dataRow = sheet.createRow(dataIndex++);
-                dataRow.createCell(0).setCellValue(key);
-                dataRow.createCell(1).setCellValue(value);
-            }
+        //填充每一个数据行
+        int dataIndex = 1;
+        List<Map.Entry<String, Integer>> accumulator = realResult.getAccumulator().getSortedDataList();
+        for (Iterator<Map.Entry<String, Integer>> it = accumulator.iterator(); it.hasNext(); ) {
+            Map.Entry<String, Integer> entry = it.next();
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            XSSFRow dataRow = sheet.createRow(dataIndex++);
+            dataRow.createCell(0).setCellValue(key);
+            dataRow.createCell(1).setCellValue(value);
         }
 
         //按时间生成表格文件名后缀
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
         String date = df.format(new Date());
 
-        //避免处理太快时后者覆盖前者数据
-        String excelFilePath = outDir + "/" + EXCEL_FILENAME + "-" + date + EXCEL_SUFFIX;
-        File excelFile = new File(excelFilePath);
-        int avoidConflict = 0;
-        while (excelFile.exists()) {
-            excelFile = new File(excelFilePath.replace(EXCEL_SUFFIX, "-" + ++avoidConflict + EXCEL_SUFFIX));
-        }
-
-        //判断输出文件的父目录情况
-        File parentFile = excelFile.getParentFile();
-        try {
-            if (parentFile.exists() && parentFile.isFile()) {
-                System.out.println("There is a " + parentFile + ", it's a file instead of a directory!");
-            }
-            if (!parentFile.exists()) {
-                parentFile.mkdirs();
-            }
-        } catch (Exception e) {
-            throw e;
+        //如果存在，删除旧的excel文件
+        File excelFile = new File(outDir, EXCEL_FILENAME + "-" + date + EXCEL_SUFFIX);
+        if (excelFile.exists()) {
+            FileUtils.deleteFile(excelFile);
         }
 
         try {
@@ -105,11 +87,11 @@ public class XLSWriter {
             wb.write(outputStream);
             outputStream.flush();
             outputStream.close();
-            System.out.println("create excel file " + excelFile.getCanonicalPath());
+            System.out.println("Staticics file: " + excelFile.getCanonicalPath());
         } catch (Exception e) {
-            System.out.println("delete excel file " + excelFile.getCanonicalPath());
             throw e;
         }
+
     }
 
 }

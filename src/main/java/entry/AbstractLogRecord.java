@@ -94,6 +94,13 @@ abstract public class AbstractLogRecord implements LogRecord {
     @Override
     public String toString() {
         //格式化日志位置信息
-        return "Original log file absolute path: " + filePath + "\nOriginal log entry line number : " + lineNo + "\n";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Original log file absolute path: ");
+        stringBuilder.append(filePath);
+        stringBuilder.append("\n");
+        stringBuilder.append("Original log entry line number : ");
+        stringBuilder.append(lineNo);
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
 }

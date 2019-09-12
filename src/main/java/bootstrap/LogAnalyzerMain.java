@@ -5,6 +5,10 @@ import analyzer.BESAnalyzer;
 import analyzer.ExceptionAnalyzer;
 import analyzer.WebLogicAnalyzer;
 import analyzer.WebLogicAnalyzer2;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import result.Result;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,8 +19,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import util.Constants;
 import util.Utils;
-import writer.TextWriter;
-import writer.XLSWriter;
+import writer.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -57,7 +60,7 @@ public class LogAnalyzerMain {
         if (Utils.isBlank(logType)) {
             logType = Constants.DEFAULT_LOG_TYPE;
         }
-        List<String> logFileList = Arrays.asList(commandLine.getOptionValue("log-files").split(","));
+
         String logEncoding = commandLine.getOptionValue("log-encoding");
         if (Utils.isBlank(logEncoding)) {
             logEncoding = Constants.DEFAULT_LOG_ENCODING;
@@ -73,14 +76,54 @@ public class LogAnalyzerMain {
         int matchLengthInt = Integer.parseInt(matchLength);
         if (matchLengthInt < 0) {
             matchLengthInt = Integer.parseInt(Constants.DEFAULT_MATCH_LENGTH);
+        } else {
+            matchLengthInt += 9;
         }
 
+        //处理日志文件所在的目录
+        List<String> logDirs = Arrays.asList(commandLine.getOptionValue("log-files").split(","));
+        List<String> logFiles = new ArrayList<>();
+        for (String dir : logDirs) {
+
+            if (!Paths.get(dir).toFile().exists()) {
+                System.out.println("File or directory [ " + dir + " ] does not exist!");
+            } else if (Paths.get(dir).toFile().isDirectory()) {
+                List<File> fs = Arrays.asList(Paths.get(dir).toFile().listFiles());
+                Collections.sort(fs, new Comparator<File>() {
+                    @Override
+                    public int compare(File o1, File o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
+                for (File f : fs) {
+                    if (f.isFile()) {
+                        String path = f.getPath();
+                        if (!logFiles.contains(path)) {
+                            logFiles.add(path);
+                        }
+                    }
+                }
+
+            } else if (Paths.get(dir).toFile().isFile()) {
+                if (!logFiles.contains(dir)) {
+                    logFiles.add(dir);
+                }
+            }
+        }
+
+        if (logFiles.isEmpty()) {
+            System.out.println("Not found the file to be processed!");
+            return;
+        }
 
         //打印参数        
-        printArgs(logType, logFileList, logEncoding, outDir, matchLengthInt);
+        printArgs(logType, logFiles, logEncoding, outDir, matchLengthInt);
 
+        System.out.println("Begin Analyze...");
         //执行分析
-        List<Result> results = invokeAnalyzer(logType, logFileList, logEncoding, matchLengthInt);
+        List<Result> results = invokeAnalyzer(logType, logFiles, logEncoding, matchLengthInt);
+
+        System.out.println("Analyze Finished...");
 
         //打印分析结果
         printResult(results, outDir, matchLengthInt);
@@ -88,12 +131,7 @@ public class LogAnalyzerMain {
 
     //打印统计结果
     private void printResult(List<Result> results, String outDir, int matchLengthInt) throws IOException {
-
-        //含有异常的日志文件的副本
-        TextWriter.write(results);
-
-        //在一个excel中生成多个统计文件的数据，每个文件的信息记录在一个sheet中
-        XLSWriter.write(results, outDir, matchLengthInt);
+        FileUtils.writeResults(results, outDir, matchLengthInt);
     }
 
     //按照类型调用对应的解析器
@@ -137,12 +175,12 @@ public class LogAnalyzerMain {
         Options options = new Options();
 
         Option type = new Option("t", "log-type", true,
-                "optional, log file type, currently supports bes and weblogic weblogic2 logs, default <" + Constants.DEFAULT_LOG_TYPE + "> .");
+                "optional, log file type, currently supports bes and weblogic weblogic2 logs and exception, default <" + Constants.DEFAULT_LOG_TYPE + "> .");
         type.setRequired(false);
         options.addOption(type);
 
         Option input = new Option("f", "log-files", true,
-                "input files, comma separated list of input files.");
+                "input files, comma separated list of input files or dirs.");
         input.setRequired(true);
         options.addOption(input);
 
@@ -151,14 +189,14 @@ public class LogAnalyzerMain {
         encoding.setRequired(false);
         options.addOption(encoding);
 
-        Option output = new Option("d", "out-dir", true,
-                "optional, result output dir, default <" + Constants.DEFAULT_OUT_DIR + "> .");
-        output.setRequired(false);
-        options.addOption(output);
+//        Option output = new Option("d", "out-dir", true,
+//                "optional, result output dir, default <" + Constants.DEFAULT_OUT_DIR + "> .");
+//        output.setRequired(false);
+//        options.addOption(output);
 
         Option length = new Option("n", "match-length", true,
                 "optional, character length that matching the same exception, default <" + Constants.DEFAULT_MATCH_LENGTH + "> .");
-        output.setRequired(false);
+        length.setRequired(false);
         options.addOption(length);
 
         return options;
@@ -172,19 +210,23 @@ public class LogAnalyzerMain {
         System.out.println("Analyzer runtime arguments info:");
         System.out.println("log-type    : " + logType);
         System.out.println("log-encoding: " + logEncoding);
-        System.out.println("match-length: " + matchLength);
+        if (matchLength == Integer.valueOf(Constants.DEFAULT_MATCH_LENGTH)) {
+            System.out.println("match-length: " + (matchLength));
+        } else {
+            System.out.println("match-length: " + (matchLength - 9));
+        }
 
         System.out.println();
-        System.out.println("Target files that may be processed:");
+        System.out.println("Target files be processed:");
         for (String f : logFileList) {
             Path file = Paths.get(f);
             System.out.println(file.normalize().toAbsolutePath());
         }
 
-        System.out.println();
-        System.out.println("Excel statistic result file path");
-        Path ourDir = Paths.get(outDir);
-        System.out.println(ourDir.normalize().toAbsolutePath());
+//        System.out.println();
+//        System.out.println("Statistic result file path:");
+//        Path ourDir = Paths.get(outDir);
+//        System.out.println(ourDir.normalize().toAbsolutePath());
 
         System.out.println();
     }

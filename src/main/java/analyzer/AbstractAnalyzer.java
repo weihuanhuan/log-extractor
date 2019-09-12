@@ -36,10 +36,10 @@ public abstract class AbstractAnalyzer implements Analyzer {
             File file = new File(f);
             String fileCanonicalPath = file.getCanonicalPath();
             if (!file.exists()) {
-                System.out.println("Target log file " + fileCanonicalPath + " no exist, skip it!");
+                System.out.println("File " + fileCanonicalPath + " does not exist, skip it!");
                 continue;
             }
-            System.out.println("Target log file " + fileCanonicalPath + " exist, process it!");
+            System.out.println("Process " + fileCanonicalPath);
 
             //初始化解析器
             this.logParser = null;

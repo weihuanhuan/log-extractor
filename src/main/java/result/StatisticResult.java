@@ -14,6 +14,7 @@ public class StatisticResult implements Result {
 
     private Accumulator accumulator = new Accumulator();
 
+    @Override
     public String getFileNamePath() {
         return fileNamePath;
     }

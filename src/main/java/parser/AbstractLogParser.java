@@ -3,7 +3,7 @@ package parser;
 import java.io.File;
 
 import interceptor.Interceptor;
-import reader.FilesReader;
+import reader.FileReader;
 
 /**
  * Created by JasonFitch on 9/7/2019.
@@ -12,14 +12,9 @@ abstract public class AbstractLogParser implements LogParser {
 
     protected Interceptor handler;
 
-    protected FilesReader reader;
+    protected FileReader reader;
 
     public AbstractLogParser() {
-        reader = new FilesReader();
-    }
-
-    public AbstractLogParser(String encoding) {
-        reader = new FilesReader(encoding);
     }
 
     @Override

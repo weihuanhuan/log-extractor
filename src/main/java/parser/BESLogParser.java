@@ -1,6 +1,7 @@
 package parser;
 
 import entry.BESLogRecord;
+import reader.InputStreamFileReader;
 import reader.Mark;
 
 /**
@@ -9,15 +10,17 @@ import reader.Mark;
 public class BESLogParser extends AbstractLogParser {
 
     public BESLogParser() {
+        this.reader = new InputStreamFileReader();
     }
 
     public BESLogParser(String encoding) {
-        super(encoding);
+        this.reader = new InputStreamFileReader(encoding);
     }
 
     @Override
     public void parse() {
         try {
+            InputStreamFileReader reader = (InputStreamFileReader) this.reader;
 
             // bes
             // 标准bes日志格式  ####| time | level | module | thread | detail |####
@@ -28,28 +31,28 @@ public class BESLogParser extends AbstractLogParser {
             String suffix = "|####\n";
             while (this.reader.hasMoreInput()) {
 
-                Mark m = this.reader.skipUntil(prefix);
+                Mark m = reader.skipUntil(prefix);
                 if (m == null) {
                     break;
                 }
 
                 BESLogRecord record = new BESLogRecord();
-                record.setLineNo(this.reader.getCurrent().line);
-                record.setFilePath(this.reader.getCurrentFilePath());
+                record.setLineNo(reader.getCurrent().line);
+                record.setFilePath(reader.getCurrentFilePath());
 
-                record.setTime(this.reader.readTextUtil(split));
+                record.setTime(reader.readTextUtil(split));
 
-                this.reader.nextChars(split);
-                record.setLevel(this.reader.readTextUtil(split));
+                reader.nextChars(split);
+                record.setLevel(reader.readTextUtil(split));
 
-                this.reader.nextChars(split);
-                record.setModule(this.reader.readTextUtil(split));
+                reader.nextChars(split);
+                record.setModule(reader.readTextUtil(split));
 
-                this.reader.nextChars(split);
-                record.setThreadInfo(this.reader.readTextUtil(split));
+                reader.nextChars(split);
+                record.setThreadInfo(reader.readTextUtil(split));
 
-                this.reader.nextChars(split);
-                record.setDetail(this.reader.readTextUtil(suffix));
+                reader.nextChars(split);
+                record.setDetail(reader.readTextUtil(suffix));
 
                 //调用处理器
                 if (this.handler != null) {
@@ -61,6 +64,5 @@ public class BESLogParser extends AbstractLogParser {
             e.printStackTrace();
         }
     }
-
 
 }

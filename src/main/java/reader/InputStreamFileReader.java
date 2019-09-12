@@ -14,7 +14,7 @@ import util.Utils;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class FilesReader implements Reader {
+public class InputStreamFileReader implements FileReader {
 
     private Mark current;
     private String currentFilePath;
@@ -24,11 +24,11 @@ public class FilesReader implements Reader {
 
     public static int LF = '\n';
 
-    public FilesReader() {
+    public InputStreamFileReader() {
         this.encoding = Constants.DEFAULT_LOG_ENCODING;
     }
 
-    public FilesReader(String encoding) {
+    public InputStreamFileReader(String encoding) {
         this.encoding = encoding;
     }
 
@@ -37,6 +37,7 @@ public class FilesReader implements Reader {
         logFiles.offer(new File(fname));
     }
 
+    @Override
     public void parseFile(String fname, String encoding) throws ParserException {
         InputStreamReader reader = null;
         try {
@@ -62,6 +63,7 @@ public class FilesReader implements Reader {
         }
     }
 
+    @Override
     public boolean hasMoreInput() throws ParserException {
         try {
             if (this.current == null || this.current.cursor >= this.current.stream.length) {
