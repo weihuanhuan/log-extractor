@@ -76,8 +76,6 @@ public class LogAnalyzerMain {
         int matchLengthInt = Integer.parseInt(matchLength);
         if (matchLengthInt < 0) {
             matchLengthInt = Integer.parseInt(Constants.DEFAULT_MATCH_LENGTH);
-        } else {
-            matchLengthInt += 9;
         }
 
         //处理日志文件所在的目录
@@ -210,11 +208,7 @@ public class LogAnalyzerMain {
         System.out.println("Analyzer runtime arguments info:");
         System.out.println("log-type    : " + logType);
         System.out.println("log-encoding: " + logEncoding);
-        if (matchLength == Integer.valueOf(Constants.DEFAULT_MATCH_LENGTH)) {
-            System.out.println("match-length: " + (matchLength));
-        } else {
-            System.out.println("match-length: " + (matchLength - 9));
-        }
+        System.out.println("match-length: " + matchLength);
 
         System.out.println();
         System.out.println("Target files be processed:");

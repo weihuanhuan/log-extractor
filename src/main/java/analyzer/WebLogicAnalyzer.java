@@ -1,6 +1,7 @@
 package analyzer;
 
 import interceptor.ExceptStatisticInter;
+import interceptor.ExceptionNameStatistic;
 import parser.WebLogicLogParser;
 import result.StatisticResult;
 
@@ -20,7 +21,7 @@ public class WebLogicAnalyzer extends AbstractAnalyzer {
         //确定目标处理方案
         StatisticResult result = new StatisticResult();
         result.setFileNamePath(fileCanonicalPath);
-        this.addInterceptors(new ExceptStatisticInter(matchLength, result));
+        this.addInterceptors(new ExceptionNameStatistic(matchLength, result));
 
     }
 }

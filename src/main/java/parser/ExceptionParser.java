@@ -17,7 +17,7 @@ public class ExceptionParser extends AbstractLogParser implements LogParser {
 
     public ExceptionParser(String encoding, int suffixMatchLength) {
         this.reader = new RandomAccessFileReader(encoding);
-        this.suffixMatchLength = suffixMatchLength;
+        this.suffixMatchLength = suffixMatchLength + 9;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package matcher;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +23,14 @@ public class LogMatcher {
 
     static public String WEBLOGINC_LOG_REG = "<(.*?)> <(.*?)> <(.*?)> <(.*?)> <(.*?)> \n(.*)\n";
 
+    static public String EXCEPTION_CLAZZ_ALLOW_CAPS_PACK_REG = "(?:[A-Za-z]+\\.)+(?:[A-Z_][A-Za-z0-9$_]*)?(?:Exception|Error)(?![a-zA-Z0-9$_.])";
+
+    static public String EXCEPTION_ATCLAZZ_ALLOW_CAPS_PACK_REG = "((?:[A-Za-z]+\\.)+[A-Z]?[A-Za-z0-9$_]+?): .*?\\s+?\tat ";
+
+    static public String EXCEPTION_REG_ALL = "(?:" + EXCEPTION_CLAZZ_ALLOW_CAPS_PACK_REG + ")|(?:" + EXCEPTION_ATCLAZZ_ALLOW_CAPS_PACK_REG + ")";
+
+    static public String CAUSED_BY = "Caused by: ";
+
     public static boolean printMatchesWholeEntry(String string, String regularExpression) {
         Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
         Matcher matcher = pattern.matcher(string);
@@ -37,5 +48,16 @@ public class LogMatcher {
         }
     }
 
+    public static List<MatchResult> getMatchResult(String string, String regularExpression) {
+        Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(string);
+
+        List<MatchResult> result = new LinkedList<>();
+        while (matcher.find()) {
+            result.add(matcher.toMatchResult());
+        }
+
+        return result;
+    }
 
 }

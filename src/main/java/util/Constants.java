@@ -10,7 +10,7 @@ public class Constants {
 
     public static String DEFAULT_LOG_ENCODING = "GB2312";
 
-    public static String DEFAULT_LOG_TYPE = "exception";
+    public static String DEFAULT_LOG_TYPE = "bes";
 
     public static String DEFAULT_OUT_DIR = System.getProperty("user.dir");
 

@@ -26,7 +26,7 @@ public class WebLogicRecord2 extends AbstractLogRecord {
     //10
     private String timestamp;
 
-    //12
+    //11
     private String code;
 
     public WebLogicRecord2() {

@@ -39,11 +39,26 @@ public class SimulateLogEntry {
             "\tat weblogic.work.ExecuteThread.execute(ExecuteThread.java:263)\n" +
             "\tat weblogic.work.ExecuteThread.run(ExecuteThread.java:221)\n";
 
+    public static String NONSTANDARD_LOG = "####|2019-08-30 17:47:41.527|INFO|null|_ThreadID=61;_ThreadName=httpWorkerThread-6301-29;|190830 17:47:41.519 httpWorkerThread-6301-29 ERROR ServiceExecutor.(:) Failed to invoke service. service=init(%{#BMEModel}), serviceBean=spring:promptAction [] \n" +
+            "com.huawei.ngcrm.framework.exception.EBusiness: 业务逻辑调用失败: 根据号码:19805080074查询不到用户\n" +
+            "\tat com.huawei.ngcrm.bundles.common.call.CommonCall.getSubsBeanByTel(CommonCall.java:4754) ~[Bundles-0.0.1-SNAPSHOT.jar:?]\n" +
+            "\tat com.huawei.ngcrm.bundles.common.call.CommonCall.getSubsBeanByTel(CommonCall.java:4714) ~[Bundles-0.0.1-SNAPSHOT.jar:?]\n" +
+            "\tat com.huawei.ngcrm.custsvc.salesconsole.action.PromptAction.init(PromptAction.java:326) ~[PromptAction.class:?]\n" +
+            "\tat com.bes.enterprise.web.connector.crane.DefaultProcessorTask.process(DefaultProcessorTask.java:841) [V8.2.0.10909.057.T001.jar:08.00.00]\n" +
+            "\tat com.bes.enterprise.web.connector.crane.DefaultReadTask.executeProcessorTask(DefaultReadTask.java:316) [bes-core.jar:08.00.00]\n" +
+            "\tat com.bes.enterprise.web.connector.crane.DefaultReadTask.doTask(DefaultReadTask.java:243) [bes-core.jar:08.00.00]\n" +
+            "\tat com.bes.enterprise.web.connector.crane.DefaultReadTask.doTask(DefaultReadTask.java:194) [bes-core.jar:08.00.00]\n" +
+            "\tat com.bes.enterprise.web.connector.crane.TaskBase.run(TaskBase.java:244) [bes-core.jar:08.00.00]\n" +
+            "\tat com.bes.enterprise.web.connector.crane.WorkerThreadImpl.run(WorkerThreadImpl.java:129) [bes-core.jar:08.00.00]\n" +
+            "|####";
+
     public static void main(String[] args) {
 
         System.out.println(BES_LOG);
         System.out.println("####################################################################");
         System.out.println(WEBLOGIC_LOG);
+        System.out.println("####################################################################");
+        System.out.println(NONSTANDARD_LOG);
 
     }
 
