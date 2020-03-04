@@ -9,7 +9,7 @@ import java.util.Queue;
 
 import parser.ParserException;
 import util.Constants;
-import util.Utils;
+import util.ReaderUtils;
 
 /**
  * Created by JasonFitch on 9/7/2019.
@@ -41,7 +41,7 @@ public class InputStreamFileReader implements FileReader {
     public void parseFile(String fname, String encoding) throws ParserException {
         InputStreamReader reader = null;
         try {
-            reader = Utils.getInputStreamReader(fname, encoding);
+            reader = ReaderUtils.getInputStreamReader(fname, encoding);
             CharArrayWriter caw = new CharArrayWriter();
             char[] buf = new char[1024];
             for (int i = 0; (i = reader.read(buf)) != -1; ) {

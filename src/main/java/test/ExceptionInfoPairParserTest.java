@@ -10,14 +10,13 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import parser.BESLogParser;
 import parser.LogParser;
 import parser.WebLogicLogParser2;
 import result.ExceptionInfoPair;
 import result.Result;
 import result.StatisticResult;
 import util.Constants;
-import writer.FileUtils;
+import util.FileUtils;
 
 /**
  * Created by JasonFitch on 9/7/2019.

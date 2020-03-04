@@ -18,8 +18,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import util.Constants;
-import util.Utils;
-import writer.FileUtils;
+import util.ReaderUtils;
+import util.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -57,20 +57,20 @@ public class LogAnalyzerMain {
         //参数验证
         CommandLine commandLine = parserArgs(options, args);
         String logType = commandLine.getOptionValue("log-type");
-        if (Utils.isBlank(logType)) {
+        if (ReaderUtils.isBlank(logType)) {
             logType = Constants.DEFAULT_LOG_TYPE;
         }
 
         String logEncoding = commandLine.getOptionValue("log-encoding");
-        if (Utils.isBlank(logEncoding)) {
+        if (ReaderUtils.isBlank(logEncoding)) {
             logEncoding = Constants.DEFAULT_LOG_ENCODING;
         }
         String outDir = commandLine.getOptionValue("out-dir");
-        if (Utils.isBlank(outDir)) {
+        if (ReaderUtils.isBlank(outDir)) {
             outDir = Constants.DEFAULT_OUT_DIR;
         }
         String matchLength = commandLine.getOptionValue("match-length");
-        if (Utils.isBlank(matchLength)) {
+        if (ReaderUtils.isBlank(matchLength)) {
             matchLength = Constants.DEFAULT_MATCH_LENGTH;
         }
         int matchLengthInt = Integer.parseInt(matchLength);

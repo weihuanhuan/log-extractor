@@ -1,9 +1,11 @@
-package writer;
+package util;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import result.Result;
+import writer.TextWriter;
+import writer.XLSWriter;
 
 /**
  * Created by JasonFitch on 9/12/2019.

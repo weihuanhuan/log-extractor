@@ -10,7 +10,7 @@ import parser.ParserException;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class Utils {
+public class ReaderUtils {
 
     public static InputStreamReader getInputStreamReader(String fname, String encoding) throws Exception {
         InputStreamReader reader;

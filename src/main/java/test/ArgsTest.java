@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import util.Constants;
-import util.Utils;
+import util.ReaderUtils;
 
 /**
  * Created by JasonFitch on 9/9/2019.
@@ -26,7 +26,7 @@ public class ArgsTest {
         //参数验证
         CommandLine commandLine = logAnalyzerMain.parserArgs(options, args);
         String logType = commandLine.getOptionValue("log-type");
-        if (Utils.isBlank(logType)) {
+        if (ReaderUtils.isBlank(logType)) {
             logType = Constants.DEFAULT_LOG_TYPE;
         }
 
@@ -35,15 +35,15 @@ public class ArgsTest {
 
         List<String> logFileList = Arrays.asList(commandLine.getOptionValue("log-files").split(","));
         String logEncoding = commandLine.getOptionValue("log-encoding");
-        if (Utils.isBlank(logEncoding)) {
+        if (ReaderUtils.isBlank(logEncoding)) {
             logEncoding = Constants.DEFAULT_LOG_ENCODING;
         }
         String outDir = commandLine.getOptionValue("out-dir");
-        if (Utils.isBlank(outDir)) {
+        if (ReaderUtils.isBlank(outDir)) {
             outDir = Constants.DEFAULT_OUT_DIR;
         }
         String matchLength = commandLine.getOptionValue("match-length");
-        if (Utils.isBlank(matchLength)) {
+        if (ReaderUtils.isBlank(matchLength)) {
             matchLength = Constants.DEFAULT_MATCH_LENGTH;
         }
         int matchLengthInt = Integer.parseInt(matchLength);
