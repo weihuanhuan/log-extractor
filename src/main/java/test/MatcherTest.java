@@ -64,6 +64,9 @@ public class MatcherTest {
         System.out.println("####################");
         LogMatcher.printMatchEchoGroups(SimulateLogEntry.NONSTANDARD_LOG, LogMatcher.EXCEPTION_ATCLAZZ_ALLOW_CAPS_PACK_REG);
         LogMatcher.printMatchEchoGroups(SimulateLogEntry.NONSTANDARD_LOG, LogMatcher.EXCEPTION_REG_ALL);
+
+        System.out.println("####################");
+        LogMatcher.printMatchEchoGroups("a.Ba.c.PrefixExceptionException", LogMatcher.EXCEPTION_REG_ALL);
     }
 
 }

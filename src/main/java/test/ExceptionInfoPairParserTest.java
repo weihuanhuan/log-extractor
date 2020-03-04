@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import parser.BESLogParser;
 import parser.LogParser;
+import parser.WebLogicLogParser2;
 import result.ExceptionInfoPair;
 import result.Result;
 import result.StatisticResult;
@@ -25,8 +26,8 @@ public class ExceptionInfoPairParserTest {
 
     public static void main(String[] args) throws IOException {
 
-        String logFileName = "CrmMaster1.log";
-        LogParser logParser = new BESLogParser(Constants.DEFAULT_LOG_ENCODING);
+        String logFileName = "BesServer1.log";
+        LogParser logParser = new WebLogicLogParser2("utf-8");
 
         String absolutePath = new File(logFileName).getAbsolutePath();
         logParser.addLogFile(new File(absolutePath));
