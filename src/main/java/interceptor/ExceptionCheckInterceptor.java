@@ -7,15 +7,15 @@ import result.StatisticResult;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class ExceptStatisticInter extends AbstractInterceptor implements Interceptor {
+public class ExceptionCheckInterceptor extends AbstractInterceptor implements Interceptor {
 
     private int matchLength;
 
-    public ExceptStatisticInter() {
+    public ExceptionCheckInterceptor() {
         matchLength = -1;
     }
 
-    public ExceptStatisticInter(int matchLength, Result result) {
+    public ExceptionCheckInterceptor(int matchLength, Result result) {
         this.matchLength = matchLength;
         this.result = result;
     }

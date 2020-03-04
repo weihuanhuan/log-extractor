@@ -3,12 +3,12 @@ package entry;
 /**
  * Created by JasonFitch on 9/12/2019.
  */
-public class ExceptionInfo extends AbstractLogRecord {
+public class ExceptionLogRecord extends AbstractLogRecord {
 
-    public ExceptionInfo() {
+    public ExceptionLogRecord() {
     }
 
-    public ExceptionInfo(String time, String level, String module, String threadInfo, String detail) {
+    public ExceptionLogRecord(String time, String level, String module, String threadInfo, String detail) {
         super(time, level, module, detail);
     }
 

@@ -1,6 +1,6 @@
 package writer;
 
-import org.apache.poi.ss.util.CellRangeAddress;
+import result.ExceptionInfoPair;
 import result.Result;
 import result.StatisticResult;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -38,20 +38,23 @@ public class XLSWriter {
 
         //设置第columnIndex列的列宽，单位为字符宽度的1/256,
         // 注意 Excel 的最大列宽255
-        int keyWidth = matchLength + 64;
-        int countWidth = 10;
-        if (keyWidth > EXCEL_MAX_COLUMN_WIDTH) {
-            sheet.setColumnWidth(0, EXCEL_MAX_COLUMN_WIDTH << 8);
+        int exceptionWidth = 64;
+        int infoWidth = matchLength + 32;
+        int countWidth = 8;
+        sheet.setColumnWidth(0, exceptionWidth << 8);
+        if (infoWidth > EXCEL_MAX_COLUMN_WIDTH) {
+            sheet.setColumnWidth(1, EXCEL_MAX_COLUMN_WIDTH << 8);
         } else {
-            sheet.setColumnWidth(0, keyWidth << 8);
+            sheet.setColumnWidth(1, infoWidth << 8);
         }
-        sheet.setColumnWidth(1, countWidth << 8);
+        sheet.setColumnWidth(2, countWidth << 8);
 
         //表头定义
         XSSFRow headRow = sheet.createRow(0);
         List<String> heads = new ArrayList<>();
-        heads.add("Exception Key");
-        heads.add("Occur Count");
+        heads.add("Exception");
+        heads.add("Info");
+        heads.add("Count");
 
         //填充表格头信息
         for (int i = 0; i < heads.size(); i++) {
@@ -61,14 +64,15 @@ public class XLSWriter {
 
         //填充每一个数据行
         int dataIndex = 1;
-        List<Map.Entry<String, Integer>> accumulator = realResult.getAccumulator().getSortedDataList();
-        for (Iterator<Map.Entry<String, Integer>> it = accumulator.iterator(); it.hasNext(); ) {
-            Map.Entry<String, Integer> entry = it.next();
-            String key = entry.getKey();
+        List<Map.Entry<ExceptionInfoPair, Integer>> accumulator = realResult.getAccumulator().getSortedDataList();
+        for (Iterator<Map.Entry<ExceptionInfoPair, Integer>> it = accumulator.iterator(); it.hasNext(); ) {
+            Map.Entry<ExceptionInfoPair, Integer> entry = it.next();
+            ExceptionInfoPair infoPair = entry.getKey();
             Integer value = entry.getValue();
             XSSFRow dataRow = sheet.createRow(dataIndex++);
-            dataRow.createCell(0).setCellValue(key);
-            dataRow.createCell(1).setCellValue(value);
+            dataRow.createCell(0).setCellValue(infoPair.getKey());
+            dataRow.createCell(1).setCellValue(infoPair.getInfo());
+            dataRow.createCell(2).setCellValue(value);
         }
 
         //按时间生成表格文件名后缀

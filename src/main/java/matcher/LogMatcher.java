@@ -23,7 +23,7 @@ public class LogMatcher {
 
     static public String WEBLOGINC_LOG_REG = "<(.*?)> <(.*?)> <(.*?)> <(.*?)> <(.*?)> \n(.*)\n";
 
-    static public String EXCEPTION_CLAZZ_ALLOW_CAPS_PACK_REG = "(?:[A-Za-z]+\\.)+(?:[A-Z_][A-Za-z0-9$_]*)?(?:Exception|Error)(?![a-zA-Z0-9$_.])";
+    static public String EXCEPTION_CLAZZ_ALLOW_CAPS_PACK_REG = "(?:[A-Za-z]+\\.)+(?:[A-Z_][A-Za-z0-9$_]*)?(?:Exception|Error)(?![a-zA-Z0-9$_.\"])";
 
     static public String EXCEPTION_ATCLAZZ_ALLOW_CAPS_PACK_REG = "((?:[A-Za-z]+\\.)+[A-Z]?[A-Za-z0-9$_]+?): .*?\\s+?\tat ";
 

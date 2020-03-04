@@ -10,24 +10,29 @@ import java.util.Map;
 
 public class Accumulator {
 
-    Map<String, Integer> map = new HashMap<>();
+    Map<ExceptionInfoPair, Integer> map = new HashMap<>();
 
     //使用map统计重复的异常数量
     public boolean count(String key) {
-        Integer orDefault = map.getOrDefault(key, new Integer(0));
-        map.put(key, ++orDefault);
+        return count(key, null);
+    }
+
+    public boolean count(String key, String info) {
+        ExceptionInfoPair infoPair = new ExceptionInfoPair(key, info);
+        Integer orDefault = map.getOrDefault(infoPair, new Integer(0));
+        map.put(infoPair, ++orDefault);
         return true;
     }
 
-    public List<Map.Entry<String, Integer>> getDataList() {
+    public List<Map.Entry<ExceptionInfoPair, Integer>> getDataList() {
         return new ArrayList<>(map.entrySet());
     }
 
-    public List<Map.Entry<String, Integer>> getSortedDataList() {
-        List<Map.Entry<String, Integer>> list = new ArrayList<>(map.entrySet());
+    public List<Map.Entry<ExceptionInfoPair, Integer>> getSortedDataList() {
+        List<Map.Entry<ExceptionInfoPair, Integer>> list = new ArrayList<>(map.entrySet());
 
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> e1, Map.Entry<String, Integer> e2) {
+        Collections.sort(list, new Comparator<Map.Entry<ExceptionInfoPair, Integer>>() {
+            public int compare(Map.Entry<ExceptionInfoPair, Integer> e1, Map.Entry<ExceptionInfoPair, Integer> e2) {
                 //降序排序
                 return e2.getValue().compareTo(e1.getValue());
             }
@@ -39,14 +44,16 @@ public class Accumulator {
     @Override
     public String toString() {
         StringBuffer stringBuffer = new StringBuffer();
-        for (Iterator<Map.Entry<String, Integer>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<String, Integer> entry = it.next();
-            stringBuffer.append(entry.getKey().trim());
+        for (Iterator<Map.Entry<ExceptionInfoPair, Integer>> it = map.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry<ExceptionInfoPair, Integer> entry = it.next();
+            stringBuffer.append(entry.getKey());
             stringBuffer.append(" = ");
             stringBuffer.append(entry.getValue());
             stringBuffer.append("\n");
         }
         return stringBuffer.toString();
     }
+
+
 }
 

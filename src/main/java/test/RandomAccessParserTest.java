@@ -2,12 +2,12 @@ package test;
 
 import entry.LogRecord;
 import interceptor.CounterInterceptor;
-import interceptor.ExceptStatisticInter;
+import interceptor.ExceptionCheckInterceptor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import parser.ExceptionParser;
+import parser.ExceptionLogParser;
 import result.StatisticResult;
 
 /**
@@ -17,16 +17,16 @@ public class RandomAccessParserTest {
 
     public static void main(String[] args) throws IOException {
 
-        ExceptionParser logParser = new ExceptionParser();
+        ExceptionLogParser logParser = new ExceptionLogParser();
 
         String logFileName = "./test.log";
         File file = new File(logFileName);
         System.out.println(file.getCanonicalPath());
         logParser.addLogFile(file);
 
-        ExceptStatisticInter exceptStatisticInter = new ExceptStatisticInter();
-        exceptStatisticInter.setResult(new StatisticResult());
-        logParser.setHandler(exceptStatisticInter);
+        ExceptionCheckInterceptor exceptionCheckInterceptor = new ExceptionCheckInterceptor();
+        exceptionCheckInterceptor.setResult(new StatisticResult());
+        logParser.setHandler(exceptionCheckInterceptor);
         logParser.setHandler(new CounterInterceptor());
 
         logParser.parse();
@@ -42,7 +42,7 @@ public class RandomAccessParserTest {
 
         PrintStream printStream = new PrintStream(new FileOutputStream(temp));
 
-        StatisticResult result = (StatisticResult) exceptStatisticInter.getResult();
+        StatisticResult result = (StatisticResult) exceptionCheckInterceptor.getResult();
         if (result != null) {
             for (LogRecord logRecord : result.getExceptionList()) {
                 printStream.print(logRecord);

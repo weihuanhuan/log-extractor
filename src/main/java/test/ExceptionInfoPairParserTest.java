@@ -1,7 +1,7 @@
 package test;
 
 import interceptor.CounterInterceptor;
-import interceptor.ExceptionNameStatistic;
+import interceptor.ExceptionInfoPairInterceptor;
 import interceptor.Interceptor;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import parser.BESLogParser;
 import parser.LogParser;
+import result.ExceptionInfoPair;
 import result.Result;
 import result.StatisticResult;
 import util.Constants;
@@ -20,7 +21,7 @@ import writer.FileUtils;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class ExceptionNameParserTest {
+public class ExceptionInfoPairParserTest {
 
     public static void main(String[] args) throws IOException {
 
@@ -34,7 +35,7 @@ public class ExceptionNameParserTest {
         StatisticResult statisticResult = new StatisticResult();
         statisticResult.setFileNamePath(absolutePath);
 
-        Interceptor interceptor = new ExceptionNameStatistic(matchLength, statisticResult);
+        Interceptor interceptor = new ExceptionInfoPairInterceptor(matchLength, statisticResult);
         logParser.setHandler(interceptor);
         logParser.setHandler(new CounterInterceptor());
 
@@ -68,7 +69,7 @@ public class ExceptionNameParserTest {
         }
 
         PrintStream printStream = new PrintStream(new FileOutputStream(temp));
-        for (Map.Entry<String, Integer> item : result.getAccumulator().getSortedDataList()) {
+        for (Map.Entry<ExceptionInfoPair, Integer> item : result.getAccumulator().getSortedDataList()) {
             printStream.print(item);
             printStream.println();
         }

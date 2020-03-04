@@ -1,21 +1,21 @@
 package parser;
 
-import entry.ExceptionInfo;
+import entry.ExceptionLogRecord;
 import reader.RandomAccessFileReader;
 import util.Constants;
 
 /**
  * Created by JasonFitch on 9/11/2019.
  */
-public class ExceptionParser extends AbstractLogParser implements LogParser {
+public class ExceptionLogParser extends AbstractLogParser implements LogParser {
 
     private int suffixMatchLength = Integer.valueOf(Constants.DEFAULT_MATCH_LENGTH);
 
-    public ExceptionParser() {
+    public ExceptionLogParser() {
         this.reader = new RandomAccessFileReader();
     }
 
-    public ExceptionParser(String encoding, int suffixMatchLength) {
+    public ExceptionLogParser(String encoding, int suffixMatchLength) {
         this.reader = new RandomAccessFileReader(encoding);
         this.suffixMatchLength = suffixMatchLength + 9;
     }
@@ -80,7 +80,7 @@ public class ExceptionParser extends AbstractLogParser implements LogParser {
                     continue;
                 }
 
-                ExceptionInfo record = new ExceptionInfo();
+                ExceptionLogRecord record = new ExceptionLogRecord();
                 record.setLineNo(lineNo);
                 record.setFilePath(reader.getCurrentFilePath());
                 record.setDetail(trim);

@@ -1,8 +1,8 @@
 package analyzer;
 
-import interceptor.ExceptionInfoInterceptor;
+import interceptor.ExceptionLogRecordInterceptor;
 import java.util.List;
-import parser.ExceptionParser;
+import parser.ExceptionLogParser;
 import result.StatisticResult;
 
 /**
@@ -17,12 +17,12 @@ public class ExceptionAnalyzer extends AbstractAnalyzer implements Analyzer {
     @Override
     public void initAnalyzer(String fileCanonicalPath) {
         //确定目标解析方案
-        this.setLogParser(new ExceptionParser(logEncoding,matchLength));
+        this.setLogParser(new ExceptionLogParser(logEncoding,matchLength));
 
         //确定目标处理方案
         StatisticResult result = new StatisticResult();
         result.setFileNamePath(fileCanonicalPath);
-        this.addInterceptors(new ExceptionInfoInterceptor(result));
+        this.addInterceptors(new ExceptionLogRecordInterceptor(result));
 
     }
 }

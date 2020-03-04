@@ -1,7 +1,7 @@
 package test;
 
 import entry.LogRecord;
-import interceptor.ExceptStatisticInter;
+import interceptor.ExceptionCheckInterceptor;
 import interceptor.CounterInterceptor;
 import parser.BESLogParser;
 import parser.LogParser;
@@ -28,9 +28,9 @@ public class InputStreamParserTest {
 
         logParser.addLogFile(new File(logFileName));
 
-        ExceptStatisticInter exceptStatisticInter = new ExceptStatisticInter();
-        exceptStatisticInter.setResult(new StatisticResult());
-        logParser.setHandler(exceptStatisticInter);
+        ExceptionCheckInterceptor exceptionCheckInterceptor = new ExceptionCheckInterceptor();
+        exceptionCheckInterceptor.setResult(new StatisticResult());
+        logParser.setHandler(exceptionCheckInterceptor);
         logParser.setHandler(new CounterInterceptor());
 
         logParser.parse();
@@ -46,7 +46,7 @@ public class InputStreamParserTest {
 
         PrintStream printStream = new PrintStream(new FileOutputStream(temp));
 
-        StatisticResult result = (StatisticResult) exceptStatisticInter.getResult();
+        StatisticResult result = (StatisticResult) exceptionCheckInterceptor.getResult();
         if (result != null) {
             for (LogRecord logRecord : result.getExceptionList()) {
                 printStream.print(logRecord);

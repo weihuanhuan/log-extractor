@@ -11,15 +11,15 @@ import result.StatisticResult;
 /**
  * Created by JasonFitch on 9/7/2019.
  */
-public class ExceptionNameStatistic extends AbstractInterceptor implements Interceptor {
+public class ExceptionInfoPairInterceptor extends AbstractInterceptor implements Interceptor {
 
     private int matchLength;
 
-    public ExceptionNameStatistic() {
+    public ExceptionInfoPairInterceptor() {
         matchLength = -1;
     }
 
-    public ExceptionNameStatistic(int matchLength, Result result) {
+    public ExceptionInfoPairInterceptor(int matchLength, Result result) {
         this.matchLength = matchLength;
         this.result = result;
     }
@@ -76,7 +76,7 @@ public class ExceptionNameStatistic extends AbstractInterceptor implements Inter
             int causedByStart = start - LogMatcher.CAUSED_BY.length();
             if (causedByStart >= 0) {
                 String causedByException = content.substring(causedByStart, causedByStart + LogMatcher.CAUSED_BY.length());
-                if (("Caused by: ").equals(causedByException)) {
+                if ((LogMatcher.CAUSED_BY).equals(causedByException)) {
                     continue;
                 }
             }
@@ -91,21 +91,22 @@ public class ExceptionNameStatistic extends AbstractInterceptor implements Inter
             }
             exceptionInfo = content.substring(end, infoPartEnd);
 
+            int finalInfoEnd = exceptionInfo.length();
             int atIndex = exceptionInfo.indexOf("\tat ");
-            if (atIndex > 0) {
-                exceptionInfo = exceptionInfo.substring(0, atIndex);
-            }
-
             int lineIndex = exceptionInfo.indexOf("\n");
-            if (lineIndex > 0) {
-                exceptionInfo = exceptionInfo.substring(0, lineIndex);
+            if (atIndex >= 0) {
+                finalInfoEnd = atIndex;
+            }
+            if (lineIndex >= 0 && finalInfoEnd > lineIndex) {
+                finalInfoEnd = lineIndex;
+            }
+            if (finalInfoEnd < exceptionInfo.length()) {
+                exceptionInfo = exceptionInfo.substring(0, finalInfoEnd);
             }
 
             exceptionInfo = exceptionInfo.trim();
 
-            String countResult = group;
-            countResult = countResult + exceptionInfo;
-            statisticResult.getAccumulator().count(countResult);
+            statisticResult.getAccumulator().count(group, exceptionInfo);
         }
 
         return true;
