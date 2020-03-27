@@ -15,12 +15,16 @@ public class BESAnalyzer extends AbstractAnalyzer {
     @Override
     public void initAnalyzer(String fileCanonicalPath) {
         //确定目标解析方案
-        this.setLogParser(new BESLogParser(logEncoding));
+        this.setLogParser(getBESLogParser(logEncoding));
 
         //确定目标处理方案
         StatisticResult result = new StatisticResult();
         result.setFileNamePath(fileCanonicalPath);
         this.addInterceptors(new ExceptionInfoPairInterceptor(matchLength, result));
+    }
+
+    protected BESLogParser getBESLogParser(String encoding){
+        return  new BESLogParser(encoding);
     }
 
 }

@@ -20,7 +20,7 @@ public class WebLogicLogParser2 extends AbstractLogParser {
             InputStreamFileReader reader = (InputStreamFileReader) this.reader;
 
             // weblogic2
-            // weblogic2日志格式 < time > < level > < module > < app > < file > < thread > < source > < blank1 > < blank2 > < timestamp > < code > < detail >
+            // weblogic2日志格式 ####< time > < level > < module > < app > < file > < thread > < source > < blank1 > < blank2 > < timestamp > < code > < detail >
 
             //定义解析标记
             String prefix = "####<";

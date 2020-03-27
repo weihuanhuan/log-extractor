@@ -9,10 +9,14 @@ import util.Constants;
 public class BESLogRecord extends AbstractLogRecord {
 
     //4
-    private String threadInfo;
+    protected String threadInfo;
+
+    public static final String prefix = "####|";
+    public static final String split = "|";
+    public static final String suffix = "|####\n";
 
     public BESLogRecord() {
-        threadInfo = Constants.EMPTY_STRING;
+        this(null, null, null, Constants.EMPTY_STRING, null);
     }
 
     public BESLogRecord(String time, String level, String module, String threadInfo, String detail) {
@@ -30,17 +34,17 @@ public class BESLogRecord extends AbstractLogRecord {
         //格式化日志异常信息
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(super.toString());
-        stringBuilder.append("####|");
+        stringBuilder.append(getPrefix());
         stringBuilder.append(super.getTime());
-        stringBuilder.append("|");
+        stringBuilder.append(getSplit());
         stringBuilder.append(super.getLevel());
-        stringBuilder.append("|");
+        stringBuilder.append(getSplit());
         stringBuilder.append(super.getModule());
-        stringBuilder.append("|");
+        stringBuilder.append(getSplit());
         stringBuilder.append(threadInfo);
-        stringBuilder.append("|");
+        stringBuilder.append(getSplit());
         stringBuilder.append(super.getDetail());
-        stringBuilder.append("|####\n");
+        stringBuilder.append(getSuffix());
         return stringBuilder.toString();
     }
 
@@ -51,4 +55,17 @@ public class BESLogRecord extends AbstractLogRecord {
     public void setThreadInfo(String threadInfo) {
         this.threadInfo = threadInfo;
     }
+
+    public String getPrefix() {
+        return BESLogRecord.prefix;
+    }
+
+    public String getSplit() {
+        return BESLogRecord.split;
+    }
+
+    public String getSuffix() {
+        return BESLogRecord.suffix;
+    }
+
 }

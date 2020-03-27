@@ -50,9 +50,13 @@ public class ArgsTest {
         if (matchLengthInt < 0) {
             matchLengthInt = Integer.parseInt(Constants.DEFAULT_MATCH_LENGTH);
         }
+        String excludeRegex = commandLine.getOptionValue("exclude-regex");
+        if (ReaderUtils.isBlank(excludeRegex)) {
+            excludeRegex = Constants.DEFAULT_EXCLUDE_REGEX;
+        }
 
         //打印参数
-        logAnalyzerMain.printArgs(logType, logFileList, logEncoding, outDir, matchLengthInt);
+        logAnalyzerMain.printArgs(logType, logFileList, logEncoding, outDir, matchLengthInt, excludeRegex);
 
     }
 }

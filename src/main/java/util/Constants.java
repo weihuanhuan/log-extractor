@@ -16,6 +16,12 @@ public class Constants {
 
     public static String DEFAULT_MATCH_LENGTH = "100";
 
+    public static String DEFAULT_RESULT_DIR_SUFFIX = "-result";
+
+    public static String DEFAULT_RESULT_DIR_SUFFIX_REGEX = "(^.*\\\\.*?" + DEFAULT_RESULT_DIR_SUFFIX + "\\\\.*$)";
+
+    public static String DEFAULT_EXCLUDE_REGEX = "(^.*_access_log.*$)";
+
     public static String DEFAULT_LOG_SUFFIX = "####|";
 
     public static String DEFAULT_LOG_PREFIX = "|####";

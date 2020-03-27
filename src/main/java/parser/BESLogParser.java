@@ -3,18 +3,27 @@ package parser;
 import entry.BESLogRecord;
 import reader.InputStreamFileReader;
 import reader.Mark;
+import util.Constants;
 
 /**
  * Created by JasonFitch on 9/7/2019.
  */
 public class BESLogParser extends AbstractLogParser {
 
+    protected String prefix;
+    protected String split;
+    protected String suffix;
+
     public BESLogParser() {
-        this.reader = new InputStreamFileReader();
+        this(Constants.DEFAULT_LOG_ENCODING);
     }
 
     public BESLogParser(String encoding) {
         this.reader = new InputStreamFileReader(encoding);
+        BESLogRecord besLogRecord = newBESLogRecord();
+        this.prefix = besLogRecord.getPrefix();
+        this.split = besLogRecord.getSplit();
+        this.suffix = besLogRecord.getSuffix();
     }
 
     @Override
@@ -22,13 +31,6 @@ public class BESLogParser extends AbstractLogParser {
         try {
             InputStreamFileReader reader = (InputStreamFileReader) this.reader;
 
-            // bes
-            // 标准bes日志格式  ####| time | level | module | thread | detail |####
-
-            //定义解析标记
-            String prefix = "####|";
-            String split = "|";
-            String suffix = "|####\n";
             while (this.reader.hasMoreInput()) {
 
                 Mark m = reader.skipUntil(prefix);
@@ -36,7 +38,7 @@ public class BESLogParser extends AbstractLogParser {
                     break;
                 }
 
-                BESLogRecord record = new BESLogRecord();
+                BESLogRecord record = newBESLogRecord();
                 record.setLineNo(reader.getCurrent().line);
                 record.setFilePath(reader.getCurrentFilePath());
 
@@ -63,6 +65,12 @@ public class BESLogParser extends AbstractLogParser {
         } catch (ParserException e) {
             e.printStackTrace();
         }
+    }
+
+    protected BESLogRecord newBESLogRecord() {
+        // bes
+        // 标准bes日志格式  ####| time | level | module | thread | detail |####
+        return new BESLogRecord();
     }
 
 }

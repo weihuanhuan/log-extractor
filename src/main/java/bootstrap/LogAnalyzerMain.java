@@ -2,6 +2,7 @@ package bootstrap;
 
 import analyzer.Analyzer;
 import analyzer.BESAnalyzer;
+import analyzer.BESAnalyzer95;
 import analyzer.ExceptionAnalyzer;
 import analyzer.WebLogicAnalyzer;
 import analyzer.WebLogicAnalyzer2;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import result.Result;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -42,11 +44,14 @@ public class LogAnalyzerMain {
         // bes
         // 标准bes日志格式  ####| time | level | module | thread | detail |####
 
+        // bes95
+        // 标准bes日志格式  ##| time | level | module | thread | detail |##
+
         // weblogic
         // weblogic日志格式  < time > < level > < module > < code > < info > detail
 
         // weblogic2
-        // weblogic2日志格式 < time > < level > < module > < app > < file > < thread > < source > < blank1 > < blank2 > < timestamp > < code > < detail >
+        // weblogic2日志格式 ####< time > < level > < module > < app > < file > < thread > < source > < blank1 > < blank2 > < timestamp > < code > < detail >
 
         //执行一次分析
         logAnalyzerMain.processOnce(options, args);
@@ -77,37 +82,22 @@ public class LogAnalyzerMain {
         if (matchLengthInt < 0) {
             matchLengthInt = Integer.parseInt(Constants.DEFAULT_MATCH_LENGTH);
         }
-
-        //处理日志文件所在的目录
-        List<String> logDirs = Arrays.asList(commandLine.getOptionValue("log-files").split(","));
-        List<String> logFiles = new ArrayList<>();
-        for (String dir : logDirs) {
-
-            if (!Paths.get(dir).toFile().exists()) {
-                System.out.println("File or directory [ " + dir + " ] does not exist!");
-            } else if (Paths.get(dir).toFile().isDirectory()) {
-                List<File> fs = Arrays.asList(Paths.get(dir).toFile().listFiles());
-                Collections.sort(fs, new Comparator<File>() {
-                    @Override
-                    public int compare(File o1, File o2) {
-                        return o1.getName().compareTo(o2.getName());
-                    }
-                });
-                for (File f : fs) {
-                    if (f.isFile()) {
-                        String path = f.getPath();
-                        if (!logFiles.contains(path)) {
-                            logFiles.add(path);
-                        }
-                    }
-                }
-
-            } else if (Paths.get(dir).toFile().isFile()) {
-                if (!logFiles.contains(dir)) {
-                    logFiles.add(dir);
-                }
-            }
+        String excludeRegex = commandLine.getOptionValue("exclude-regex");
+        if (ReaderUtils.isBlank(excludeRegex)) {
+            excludeRegex = Constants.DEFAULT_EXCLUDE_REGEX;
         }
+
+        //处理日志文件所在的目录, 寻找可能要处理的日志文件
+        List<String> logDirs = Arrays.asList(commandLine.getOptionValue("log-files").split(","));
+        List<String> logFiles = getAllLogFileRecursion(logDirs);
+
+        //过滤访问日志 通过日志文件的名字正则
+        if (!ReaderUtils.isBlank(excludeRegex)) {
+            filterAccessLogFile(logFiles, excludeRegex);
+        }
+
+        //过滤结果目录 通过结果目录的名字正则
+        filterResultDir(logFiles, Constants.DEFAULT_RESULT_DIR_SUFFIX_REGEX);
 
         if (logFiles.isEmpty()) {
             System.out.println("Not found the file to be processed!");
@@ -115,7 +105,7 @@ public class LogAnalyzerMain {
         }
 
         //打印参数        
-        printArgs(logType, logFiles, logEncoding, outDir, matchLengthInt);
+        printArgs(logType, logFiles, logEncoding, outDir, matchLengthInt, excludeRegex);
 
         System.out.println("Begin Analyze...");
         //执行分析
@@ -125,6 +115,69 @@ public class LogAnalyzerMain {
 
         //打印分析结果
         printResult(results, outDir, matchLengthInt);
+    }
+
+    private static List<String> getAllLogFileRecursion(List<String> logDirs) {
+        List<String> logFiles = new ArrayList<>();
+        for (String dir : logDirs) {
+            File temp = new File(dir);
+            if (!temp.exists()) {
+                System.out.println("File or directory [ " + dir + " ] does not exist!");
+                continue;
+            }
+
+            if (temp.isFile()) {
+                addFile(temp, logFiles);
+            } else {
+                recursionDir(temp, logFiles);
+            }
+        }
+        return logFiles;
+    }
+
+    private static void addFile(File file, List<String> logFiles) {
+        String filePath = file.getPath();
+        if (!logFiles.contains(filePath)) {
+            logFiles.add(filePath);
+        }
+    }
+
+    private static void recursionDir(File dir, List<String> logFiles) {
+        List<File> fileList = Arrays.asList(dir.listFiles());
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+
+        for (File file : fileList) {
+            if (file.isFile()) {
+                addFile(file, logFiles);
+            } else {
+                recursionDir(file, logFiles);
+            }
+        }
+    }
+
+    private static void filterResultDir(List<String> logFiles, String resultDirSuffixRegex) {
+        Iterator<String> iterator = logFiles.iterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (next.matches(resultDirSuffixRegex)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private static void filterAccessLogFile(List<String> logFiles, String accessLogFileRegex) {
+        Iterator<String> iterator = logFiles.iterator();
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            if (next.replaceAll(".*\\\\","").matches(accessLogFileRegex)) {
+                iterator.remove();
+            }
+        }
     }
 
     //打印统计结果
@@ -138,6 +191,8 @@ public class LogAnalyzerMain {
         Analyzer analyzer;
         if (logType.equalsIgnoreCase("bes")) {
             analyzer = new BESAnalyzer(logFileList, logEncoding, matchLength);
+        } else if (logType.equalsIgnoreCase("bes95")) {
+            analyzer = new BESAnalyzer95(logFileList, logEncoding, matchLength);
         } else if (logType.equalsIgnoreCase("weblogic")) {
             analyzer = new WebLogicAnalyzer(logFileList, logEncoding, matchLength);
         } else if (logType.equalsIgnoreCase("weblogic2")) {
@@ -173,7 +228,7 @@ public class LogAnalyzerMain {
         Options options = new Options();
 
         Option type = new Option("t", "log-type", true,
-                "optional, log file type, currently supports bes and weblogic weblogic2 logs and exception, default <" + Constants.DEFAULT_LOG_TYPE + "> .");
+                "optional, log file type, currently supports bes, bes95, weblogic, weblogic2 and exception, default <" + Constants.DEFAULT_LOG_TYPE + "> .");
         type.setRequired(false);
         options.addOption(type);
 
@@ -197,18 +252,24 @@ public class LogAnalyzerMain {
         length.setRequired(false);
         options.addOption(length);
 
+        Option exclude = new Option("x", "exclude-regex", true,
+                "optional, exclude regular expressions for parsing log file name, default <" + Constants.DEFAULT_EXCLUDE_REGEX + "> .");
+        length.setRequired(false);
+        options.addOption(exclude);
+
         return options;
     }
 
     //打印参数信息
-    public void printArgs(String logType, List<String> logFileList, String logEncoding, String outDir, int matchLength) {
+    public void printArgs(String logType, List<String> logFileList, String logEncoding, String outDir, int matchLength, String excludeRegex) {
         System.out.println("user.dir    : " + System.getProperty("user.dir"));
 
         System.out.println();
         System.out.println("Analyzer runtime arguments info:");
-        System.out.println("log-type    : " + logType);
-        System.out.println("log-encoding: " + logEncoding);
-        System.out.println("match-length: " + matchLength);
+        System.out.println("log-type     : " + logType);
+        System.out.println("log-encoding : " + logEncoding);
+        System.out.println("match-length : " + matchLength);
+        System.out.println("exclude-regex: " + excludeRegex);
 
         System.out.println();
         System.out.println("Target files be processed:");

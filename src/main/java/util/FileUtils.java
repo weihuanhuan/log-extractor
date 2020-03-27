@@ -17,7 +17,7 @@ public class FileUtils {
         for (Result result : results) {
             //处理在前的文件，如果存在就删除并新建，否则直接新建
             String fileNamePath = result.getFileNamePath();
-            File tempDir = new File(fileNamePath + "-result");
+            File tempDir = new File(fileNamePath + Constants.DEFAULT_RESULT_DIR_SUFFIX);
             if (tempDir.exists()) {
                 FileUtils.deleteFile(tempDir);
             }
