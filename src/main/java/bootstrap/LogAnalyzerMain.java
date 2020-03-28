@@ -8,9 +8,7 @@ import analyzer.WebLogicAnalyzer;
 import analyzer.WebLogicAnalyzer2;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+
 import result.Result;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -93,11 +91,11 @@ public class LogAnalyzerMain {
 
         //过滤访问日志 通过日志文件的名字正则
         if (!ReaderUtils.isBlank(excludeRegex)) {
-            filterAccessLogFile(logFiles, excludeRegex);
+            FileUtils.filterByFileName(logFiles, excludeRegex);
         }
 
         //过滤结果目录 通过结果目录的名字正则
-        filterResultDir(logFiles, Constants.DEFAULT_RESULT_DIR_SUFFIX_REGEX);
+        FileUtils.filterByDirName(logFiles, Constants.DEFAULT_RESULT_DIR_SUFFIX_REGEX);
 
         if (logFiles.isEmpty()) {
             System.out.println("Not found the file to be processed!");
@@ -127,57 +125,12 @@ public class LogAnalyzerMain {
             }
 
             if (temp.isFile()) {
-                addFile(temp, logFiles);
+                FileUtils.addFile(temp, logFiles);
             } else {
-                recursionDir(temp, logFiles);
+                FileUtils.recursionDir(temp, logFiles);
             }
         }
         return logFiles;
-    }
-
-    private static void addFile(File file, List<String> logFiles) {
-        String filePath = file.getPath();
-        if (!logFiles.contains(filePath)) {
-            logFiles.add(filePath);
-        }
-    }
-
-    private static void recursionDir(File dir, List<String> logFiles) {
-        List<File> fileList = Arrays.asList(dir.listFiles());
-        Collections.sort(fileList, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-
-        for (File file : fileList) {
-            if (file.isFile()) {
-                addFile(file, logFiles);
-            } else {
-                recursionDir(file, logFiles);
-            }
-        }
-    }
-
-    private static void filterResultDir(List<String> logFiles, String resultDirSuffixRegex) {
-        Iterator<String> iterator = logFiles.iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            if (next.matches(resultDirSuffixRegex)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    private static void filterAccessLogFile(List<String> logFiles, String accessLogFileRegex) {
-        Iterator<String> iterator = logFiles.iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            if (next.replaceAll(".*\\\\","").matches(accessLogFileRegex)) {
-                iterator.remove();
-            }
-        }
     }
 
     //打印统计结果
