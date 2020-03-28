@@ -8,8 +8,8 @@ import java.util.List;
 
 public class BESAnalyzer extends AbstractAnalyzer {
 
-    public BESAnalyzer(List<String> logFileList, String logEncoding, int matchLength) {
-        super(logFileList, logEncoding, matchLength);
+    public BESAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
+        super(logFileList, logEncoding, matchLength, compressDigitalLength);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class BESAnalyzer extends AbstractAnalyzer {
         this.setLogParser(getBESLogParser(logEncoding));
 
         //确定目标处理方案
-        StatisticResult result = new StatisticResult();
+        StatisticResult result = new StatisticResult(compressDigitalLength);
         result.setFileNamePath(fileCanonicalPath);
         this.addInterceptors(new ExceptionInfoPairInterceptor(matchLength, result));
     }

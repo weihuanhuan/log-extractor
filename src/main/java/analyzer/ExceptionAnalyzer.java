@@ -10,8 +10,8 @@ import result.StatisticResult;
  */
 public class ExceptionAnalyzer extends AbstractAnalyzer implements Analyzer {
 
-    public ExceptionAnalyzer(List<String> logFileList, String logEncoding, int matchLength) {
-        super(logFileList, logEncoding, matchLength);
+    public ExceptionAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
+        super(logFileList, logEncoding, matchLength, compressDigitalLength);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class ExceptionAnalyzer extends AbstractAnalyzer implements Analyzer {
         this.setLogParser(new ExceptionLogParser(logEncoding,matchLength));
 
         //确定目标处理方案
-        StatisticResult result = new StatisticResult();
+        StatisticResult result = new StatisticResult(compressDigitalLength);
         result.setFileNamePath(fileCanonicalPath);
         this.addInterceptors(new ExceptionLogRecordInterceptor(result));
 

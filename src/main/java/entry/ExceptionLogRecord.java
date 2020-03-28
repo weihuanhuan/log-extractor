@@ -8,7 +8,7 @@ public class ExceptionLogRecord extends AbstractLogRecord {
     public ExceptionLogRecord() {
     }
 
-    public ExceptionLogRecord(String time, String level, String module, String threadInfo, String detail) {
+    public ExceptionLogRecord(String time, String level, String module, String detail) {
         super(time, level, module, detail);
     }
 

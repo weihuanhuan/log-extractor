@@ -1,5 +1,7 @@
 package result;
 
+import util.ReaderUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,7 +12,15 @@ import java.util.Map;
 
 public class Accumulator {
 
-    Map<ExceptionInfoPair, Integer> map = new HashMap<>();
+    private String regex;
+
+    private Map<ExceptionInfoPair, Integer> map = new HashMap<>();
+
+    public Accumulator(int compressDigitalLength) {
+        if (compressDigitalLength > 0) {
+            regex = "\\d{" + compressDigitalLength + ",}";
+        }
+    }
 
     //使用map统计重复的异常数量
     public boolean count(String key) {
@@ -18,7 +28,12 @@ public class Accumulator {
     }
 
     public boolean count(String key, String info) {
-        ExceptionInfoPair infoPair = new ExceptionInfoPair(key, info);
+        String countableInfo = info;
+        if (regex != null && !ReaderUtils.isBlank(info)) {
+            countableInfo = info.replaceAll(regex, " ###COMPRESSED_DIGITAL### ");
+        }
+
+        ExceptionInfoPair infoPair = new ExceptionInfoPair(key, countableInfo);
         Integer orDefault = map.getOrDefault(infoPair, new Integer(0));
         map.put(infoPair, ++orDefault);
         return true;

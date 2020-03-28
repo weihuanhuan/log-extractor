@@ -6,8 +6,8 @@ import parser.BESLogParser95;
 
 public class BESAnalyzer95 extends BESAnalyzer {
 
-    public BESAnalyzer95(List<String> logFileList, String logEncoding, int matchLength) {
-        super(logFileList, logEncoding, matchLength);
+    public BESAnalyzer95(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
+        super(logFileList, logEncoding, matchLength, compressDigitalLength);
     }
 
     @Override

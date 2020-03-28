@@ -1,6 +1,7 @@
 package result;
 
 import entry.LogRecord;
+import util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,15 @@ public class StatisticResult implements Result {
 
     private List<LogRecord> exceptionList = new ArrayList<>();
 
-    private Accumulator accumulator = new Accumulator();
+    private Accumulator accumulator;
+
+    public StatisticResult() {
+        this(Integer.parseInt(Constants.DEFAULT_COMPRESS_DIGITAL_LENGTH));
+    }
+
+    public StatisticResult(int compressDigitalLength) {
+        this.accumulator = new Accumulator(compressDigitalLength);
+    }
 
     @Override
     public String getFileNamePath() {
@@ -32,7 +41,7 @@ public class StatisticResult implements Result {
     }
 
     public Accumulator getAccumulator() {
-        return accumulator;
+        return this.accumulator;
     }
 
     public void setAccumulator(Accumulator accumulator) {

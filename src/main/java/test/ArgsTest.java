@@ -1,11 +1,15 @@
 package test;
 
+import bootstrap.CommandOptions;
 import bootstrap.LogAnalyzerMain;
+
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import util.Constants;
+import util.FileUtils;
 import util.ReaderUtils;
 
 /**
@@ -25,24 +29,20 @@ public class ArgsTest {
 
         //参数验证
         CommandLine commandLine = logAnalyzerMain.parserArgs(options, args);
-        String logType = commandLine.getOptionValue("log-type");
+        String logType = commandLine.getOptionValue(CommandOptions.LOG_TYPE);
         if (ReaderUtils.isBlank(logType)) {
             logType = Constants.DEFAULT_LOG_TYPE;
         }
 
-        logType = commandLine.getOptionValue("log-type");
-        System.out.println("logType======"+logType);
-
-        List<String> logFileList = Arrays.asList(commandLine.getOptionValue("log-files").split(","));
-        String logEncoding = commandLine.getOptionValue("log-encoding");
+        String logEncoding = commandLine.getOptionValue(CommandOptions.LOG_ENCODING);
         if (ReaderUtils.isBlank(logEncoding)) {
             logEncoding = Constants.DEFAULT_LOG_ENCODING;
         }
-        String outDir = commandLine.getOptionValue("out-dir");
+        String outDir = commandLine.getOptionValue(CommandOptions.OUT_DIR);
         if (ReaderUtils.isBlank(outDir)) {
             outDir = Constants.DEFAULT_OUT_DIR;
         }
-        String matchLength = commandLine.getOptionValue("match-length");
+        String matchLength = commandLine.getOptionValue(CommandOptions.MATCH_LENGTH);
         if (ReaderUtils.isBlank(matchLength)) {
             matchLength = Constants.DEFAULT_MATCH_LENGTH;
         }
@@ -50,13 +50,39 @@ public class ArgsTest {
         if (matchLengthInt < 0) {
             matchLengthInt = Integer.parseInt(Constants.DEFAULT_MATCH_LENGTH);
         }
-        String excludeRegex = commandLine.getOptionValue("exclude-regex");
+        String excludeRegex = commandLine.getOptionValue(CommandOptions.EXCLUDE_REGEX);
         if (ReaderUtils.isBlank(excludeRegex)) {
             excludeRegex = Constants.DEFAULT_EXCLUDE_REGEX;
         }
 
+        String compressDigitalLength = commandLine.getOptionValue(CommandOptions.COMPRESS_LENGTH);
+        if (ReaderUtils.isBlank(compressDigitalLength)) {
+            compressDigitalLength = Constants.DEFAULT_COMPRESS_DIGITAL_LENGTH;
+        }
+        int compressDigitalLengthInt = Integer.parseInt(compressDigitalLength);
+        if (compressDigitalLengthInt < 0) {
+            compressDigitalLengthInt = Integer.parseInt(Constants.DEFAULT_COMPRESS_DIGITAL_LENGTH);
+        }
+
+        //处理日志文件所在的目录, 寻找可能要处理的日志文件
+        List<String> logDirs = Arrays.asList(commandLine.getOptionValue(CommandOptions.LOG_FILES).split(","));
+        List<String> logFiles = logAnalyzerMain.getAllLogFileRecursion(logDirs);
+
+        //过滤访问日志 通过日志文件的名字正则
+        if (!ReaderUtils.isBlank(excludeRegex)) {
+            FileUtils.filterByFileName(logFiles, excludeRegex);
+        }
+
+        //过滤结果目录 通过结果目录的名字正则
+        FileUtils.filterByDirName(logFiles, Constants.DEFAULT_RESULT_DIR_SUFFIX_REGEX);
+
+        if (logFiles.isEmpty()) {
+            System.out.println("Not found the file to be processed!");
+            return;
+        }
+
         //打印参数
-        logAnalyzerMain.printArgs(logType, logFileList, logEncoding, outDir, matchLengthInt, excludeRegex);
+        logAnalyzerMain.printArgs(logType, logFiles, logEncoding, outDir, matchLengthInt, excludeRegex, compressDigitalLengthInt);
 
     }
 }

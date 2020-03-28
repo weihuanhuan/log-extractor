@@ -8,9 +8,9 @@ public class Constants {
     //一些默认值的定义
     public static String EMPTY_STRING = "";
 
-    public static String DEFAULT_LOG_ENCODING = "GB2312";
+    public static String DEFAULT_LOG_ENCODING = "UTF-8";
 
-    public static String DEFAULT_LOG_TYPE = "bes";
+    public static String DEFAULT_LOG_TYPE = "bes95";
 
     public static String DEFAULT_OUT_DIR = System.getProperty("user.dir");
 
@@ -21,6 +21,8 @@ public class Constants {
     public static String DEFAULT_RESULT_DIR_SUFFIX_REGEX = "(^.*\\\\.*?" + DEFAULT_RESULT_DIR_SUFFIX + "\\\\.*$)";
 
     public static String DEFAULT_EXCLUDE_REGEX = "(^.*_access_log.*$)";
+
+    public static String DEFAULT_COMPRESS_DIGITAL_LENGTH = "0";
 
     public static String DEFAULT_LOG_SUFFIX = "####|";
 

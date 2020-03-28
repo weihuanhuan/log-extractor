@@ -8,8 +8,8 @@ import java.util.List;
 
 public class WebLogicAnalyzer2 extends AbstractAnalyzer {
 
-    public WebLogicAnalyzer2(List<String> logFileList, String logEncoding, int matchLength) {
-        super(logFileList, logEncoding, matchLength);
+    public WebLogicAnalyzer2(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
+        super(logFileList, logEncoding, matchLength, compressDigitalLength);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class WebLogicAnalyzer2 extends AbstractAnalyzer {
         this.setLogParser(new WebLogicLogParser2(logEncoding));
 
         //确定目标处理方案
-        StatisticResult result = new StatisticResult();
+        StatisticResult result = new StatisticResult(compressDigitalLength);
         result.setFileNamePath(fileCanonicalPath);
         this.addInterceptors(new ExceptionInfoPairInterceptor(matchLength, result));
     }

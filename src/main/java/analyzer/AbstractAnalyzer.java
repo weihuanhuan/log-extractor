@@ -15,16 +15,18 @@ public abstract class AbstractAnalyzer implements Analyzer {
     private List<String> logFileList;
     protected String logEncoding;
     protected int matchLength;
+    protected int compressDigitalLength;
 
     private LogParser logParser;
     private List<Interceptor> interceptors = new LinkedList<>();
 
     protected List<Result> results = new LinkedList<>();
 
-    public AbstractAnalyzer(List<String> logFileList, String logEncoding, int matchLength) {
+    public AbstractAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
         this.logFileList = logFileList;
         this.logEncoding = logEncoding;
         this.matchLength = matchLength;
+        this.compressDigitalLength = compressDigitalLength;
     }
 
     abstract public void initAnalyzer(String fileCanonicalPath);
