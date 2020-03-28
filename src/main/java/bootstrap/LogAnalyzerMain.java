@@ -95,6 +95,12 @@ public class LogAnalyzerMain {
             compressDigitalLengthInt = Integer.parseInt(Constants.DEFAULT_COMPRESS_DIGITAL_LENGTH);
         }
 
+        String captureExcel = commandLine.getOptionValue(CommandOptions.CAPTURE_EXCEL);
+        if (ReaderUtils.isBlank(captureExcel)) {
+            captureExcel = Constants.DEFAULT_CAPTURE_EXCEL;
+        }
+        boolean captureExcelBool = Boolean.parseBoolean(captureExcel);
+
         //处理日志文件所在的目录, 寻找可能要处理的日志文件
         List<String> logDirs = Arrays.asList(commandLine.getOptionValue(CommandOptions.LOG_FILES).split(","));
         List<String> logFiles = getAllLogFileRecursion(logDirs);
@@ -113,7 +119,8 @@ public class LogAnalyzerMain {
         }
 
         //打印参数        
-        printArgs(logType, logFiles, logEncoding, outDir, matchLengthInt, excludeRegex, compressDigitalLengthInt);
+        printArgs(logType, logFiles, logEncoding, outDir
+                , matchLengthInt, excludeRegex, compressDigitalLengthInt, captureExcelBool);
 
         System.out.println("Begin Analyze...");
         //执行分析
@@ -122,7 +129,7 @@ public class LogAnalyzerMain {
         System.out.println("Analyze Finished...");
 
         //打印分析结果
-        printResult(results, outDir, matchLengthInt);
+        printResult(results, outDir, matchLengthInt, captureExcelBool);
     }
 
     public static List<String> getAllLogFileRecursion(List<String> logDirs) {
@@ -144,8 +151,8 @@ public class LogAnalyzerMain {
     }
 
     //打印统计结果
-    private void printResult(List<Result> results, String outDir, int matchLengthInt) throws IOException {
-        FileUtils.writeResults(results, outDir, matchLengthInt);
+    private void printResult(List<Result> results, String outDir, int matchLengthInt, boolean captureExcelBool) throws IOException {
+        FileUtils.writeResults(results, outDir, matchLengthInt, captureExcelBool);
     }
 
     //按照类型调用对应的解析器
@@ -225,11 +232,17 @@ public class LogAnalyzerMain {
         length.setRequired(false);
         options.addOption(compress);
 
+        Option capture = new Option("s", CommandOptions.CAPTURE_EXCEL, true,
+                "Optional, Boolean, capture excel info a picture, default <" + Constants.DEFAULT_CAPTURE_EXCEL + "> .");
+        length.setRequired(false);
+        options.addOption(capture);
+
         return options;
     }
 
     //打印参数信息
-    public void printArgs(String logType, List<String> logFileList, String logEncoding, String outDir, int matchLength, String excludeRegex, int compressDigitalLengthInt) {
+    public void printArgs(String logType, List<String> logFileList, String logEncoding, String outDir,
+                          int matchLength, String excludeRegex, int compressDigitalLengthInt, boolean captureExcelBool) {
         System.out.println("user.dir    : " + System.getProperty("user.dir"));
 
         System.out.println();
@@ -239,6 +252,7 @@ public class LogAnalyzerMain {
         System.out.println("match-length   : " + matchLength);
         System.out.println("exclude-regex  : " + excludeRegex);
         System.out.println("compress-length: " + compressDigitalLengthInt);
+        System.out.println("capture-excel  : " + captureExcelBool);
 
         System.out.println();
         System.out.println("Target files be processed:");

@@ -24,6 +24,8 @@ public class Constants {
 
     public static String DEFAULT_COMPRESS_DIGITAL_LENGTH = "0";
 
+    public static String DEFAULT_CAPTURE_EXCEL = "true";
+
     public static String DEFAULT_LOG_SUFFIX = "####|";
 
     public static String DEFAULT_LOG_PREFIX = "|####";

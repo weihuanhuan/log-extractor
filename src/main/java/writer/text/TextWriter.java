@@ -1,4 +1,4 @@
-package writer;
+package writer.text;
 
 import entry.LogRecord;
 import result.Result;
@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+
 import util.FileUtils;
 
 public class TextWriter {
@@ -28,6 +29,7 @@ public class TextWriter {
             printStream.print(logRecord);
             printStream.println();
         }
+        System.out.println("statistics text file: " + textFile.getCanonicalPath());
     }
 
 }

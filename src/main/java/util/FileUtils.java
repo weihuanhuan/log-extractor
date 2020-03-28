@@ -7,9 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
 import result.Result;
-import writer.TextWriter;
-import writer.XLSWriter;
+import writer.text.TextWriter;
+import writer.excel.XLSWriter;
 
 /**
  * Created by JasonFitch on 9/12/2019.
@@ -17,6 +18,10 @@ import writer.XLSWriter;
 public class FileUtils {
 
     public static void writeResults(List<Result> results, String outDir, int matchLengthInt) throws IOException {
+        writeResults(results, outDir, matchLengthInt, Boolean.parseBoolean(Constants.DEFAULT_CAPTURE_EXCEL));
+    }
+
+    public static void writeResults(List<Result> results, String outDir, int matchLengthInt, boolean captureExcelBool) throws IOException {
 
         for (Result result : results) {
             //处理在前的文件，如果存在就删除并新建，否则直接新建
@@ -31,7 +36,7 @@ public class FileUtils {
             TextWriter.write(result, tempDir);
 
             //写入统计的Excel
-            XLSWriter.write(result, tempDir, matchLengthInt);
+            XLSWriter.write(result, tempDir, matchLengthInt, captureExcelBool);
         }
     }
 
@@ -88,7 +93,7 @@ public class FileUtils {
         Iterator<String> iterator = logFiles.iterator();
         while (iterator.hasNext()) {
             String next = iterator.next();
-            if (next.replaceAll(".*\\\\","").matches(accessLogFileRegex)) {
+            if (next.replaceAll(".*\\\\", "").matches(accessLogFileRegex)) {
                 iterator.remove();
             }
         }

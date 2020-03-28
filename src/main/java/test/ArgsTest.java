@@ -64,6 +64,12 @@ public class ArgsTest {
             compressDigitalLengthInt = Integer.parseInt(Constants.DEFAULT_COMPRESS_DIGITAL_LENGTH);
         }
 
+        String captureExcel = commandLine.getOptionValue(CommandOptions.CAPTURE_EXCEL);
+        if (ReaderUtils.isBlank(captureExcel)) {
+            captureExcel = Constants.DEFAULT_CAPTURE_EXCEL;
+        }
+        boolean captureExcelBool = Boolean.parseBoolean(captureExcel);
+
         //处理日志文件所在的目录, 寻找可能要处理的日志文件
         List<String> logDirs = Arrays.asList(commandLine.getOptionValue(CommandOptions.LOG_FILES).split(","));
         List<String> logFiles = logAnalyzerMain.getAllLogFileRecursion(logDirs);
@@ -82,7 +88,8 @@ public class ArgsTest {
         }
 
         //打印参数
-        logAnalyzerMain.printArgs(logType, logFiles, logEncoding, outDir, matchLengthInt, excludeRegex, compressDigitalLengthInt);
+        logAnalyzerMain.printArgs(logType, logFiles, logEncoding, outDir
+                , matchLengthInt, excludeRegex, compressDigitalLengthInt, captureExcelBool);
 
     }
 }

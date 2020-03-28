@@ -8,6 +8,7 @@ public class CommandOptions {
     public static final String MATCH_LENGTH = "match-length";
     public static final String EXCLUDE_REGEX = "exclude-regex";
     public static final String COMPRESS_LENGTH = "compress-length";
+    public static final String CAPTURE_EXCEL = "capture-excel";
     public static final String LOG_FILES = "log-files";
 
     public static final String LOG_TYPE_SHORT = "log-type";
@@ -16,6 +17,7 @@ public class CommandOptions {
     public static final String MATCH_LENGTH_SHORT  = "match-length";
     public static final String EXCLUDE_REGEX_SHORT  = "exclude-regex";
     public static final String COMPRESS_LENGTH_SHORT  = "compress-length";
+    public static final String CAPTURE_EXCEL_SHORT = "capture-excel";
     public static final String LOG_FILES_SHORT  = "log-files";
 
 
