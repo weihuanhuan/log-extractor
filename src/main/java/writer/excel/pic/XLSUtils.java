@@ -64,15 +64,18 @@ public class XLSUtils {
                 cells[i][j].setCell(sheet.getRow(i).getCell(j));
                 cells[i][j].setRow(i);
                 cells[i][j].setCol(j);
+                //超出了指定的绘制范围的单元格，也当作不显示的来对待，同时他们也是不绘制的。
                 boolean ifShow = (i >= fromIndex[0]) && (j >= fromIndex[1]);    //首先行列要在指定区域之间
                 ifShow = ifShow && !(sheet.isColumnHidden(j) || sheet.getRow(i).getZeroHeight()); //其次行列不可以隐藏
                 cells[i][j].setShow(ifShow);
 
                 // 计算所求区域宽度
                 float widthPix = !ifShow ? 0 : sheet.getColumnWidthInPixels(j); // 如果该单元格是隐藏的，则置宽度为0
+                // 按照第一行为标准计算整个绘制图像的宽度
                 if (i == fromIndex[0]) {
                     imageWidth += widthPix;
                 }
+                //记录每一列的坐标，即每次绘制一个新列时，画笔在画布的开始位置的 x轴 坐标
                 colPixPos[j + 1] = (int) (widthPix * 1.15 + colPixPos[j]);
 
             }
@@ -82,6 +85,7 @@ public class XLSUtils {
             ifShow = ifShow && !sheet.getRow(i).getZeroHeight();  //行序列不能隐藏
             float heightPoint = !ifShow ? 0 : sheet.getRow(i).getHeightInPoints(); // 如果该单元格是隐藏的，则置高度为0
             imageHeight += heightPoint;
+            //记录每一行的坐标，即每次绘制一个新行时，画笔在画布的开始位置的 y轴 坐标
             rowPixPos[i + 1] = (int) (heightPoint * 96 / 72) + rowPixPos[i];
 
         }
@@ -104,7 +108,7 @@ public class XLSUtils {
                 grid.setCol(cells[i][j].getCol());
                 grid.setShow(cells[i][j].isShow());
 
-                // 判断是否为合并单元格
+                // 判断是否为合并单元格，合并的单元格只需要绘制第一个就可以了。其余的单元格已经包含在这里面了。
                 int[] isInMergedStatus = isInMerged(grid.getRow(), grid.getCol(), rangeAddress);
 
                 if (isInMergedStatus[0] == 0 && isInMergedStatus[1] == 0) {
@@ -112,9 +116,14 @@ public class XLSUtils {
                     continue;
                 } else if (isInMergedStatus[0] != -1 && isInMergedStatus[1] != -1) {
                     // 此单元格是合并单元格，并且属于第一个单元格，则需要调整网格大小
+                    // 依据 合并的单元格范围 是否超过了 指定的绘制范围 来确定 最后实际的范围。
+                    // 如果超过了就使用指定的范围，没超过就使用 合并的范围
                     int lastRowPos = isInMergedStatus[0] > rowSize - 1 ? rowSize - 1 : isInMergedStatus[0];
                     int lastColPos = isInMergedStatus[1] > colSize - 1 ? colSize - 1 : isInMergedStatus[1];
 
+                    //计算合并的整个单元格占用的空间大小，其范围值为
+                    // X轴：合并范围最后一列的后一列的开始位置 - 当前合并范围的第一列的开始位置
+                    // Y轴：和 X轴计算同理
                     grid.setWidth(colPixPos[lastColPos + 1] - colPixPos[j]);
                     grid.setHeight(rowPixPos[lastRowPos + 1] - rowPixPos[i]);
                 }
@@ -209,7 +218,7 @@ public class XLSUtils {
         }
 
         g2d.dispose();
-        ImageIO.write(image, "jpg", outFile);
+        ImageIO.write(image, "png", outFile);
     }
 
 
@@ -219,8 +228,9 @@ public class XLSUtils {
      * @param row
      * @param col
      * @param rangeAddress
-     * @return 如果不是合并单元格返回{-1,-1},如果是合并单元格并且是一个单元格返回{lastRow,lastCol},
-     * 如果是合并单元格并且不是第一个格子返回{0,0}
+     * @return 如果不是合并单元格返回{-1,-1},
+     *         如果是合并单元格并且是第一个单元格返回{lastRow,lastCol},
+     *         如果是合并单元格并且不是第一个格子返回{0,0}
      */
     private static int[] isInMerged(int row, int col, List<CellRangeAddress> rangeAddress) {
         int[] isInMergedStatus = {-1, -1};

@@ -115,7 +115,10 @@ public class Grid {
     }
 
     public void setFont(org.apache.poi.ss.usermodel.Font font) {
-//        不适用Excel中的字体，默认全部使用宋体
+//JF      从excel中读取出来的字体，生成图片后总是乱码。在内存中的 String 是没有乱码的，excel打开也不会乱码
+//        所以问题是文件写入时使用的字体，debug 发现实际上读取出来的字体是不支持中文的，
+//        所以可能是 excel 对这些不支持中文的字体默认使用了支持中文的字库来显示，
+//        所以这里不使用 Excel 中的字体，默认全部使用支持中文的宋体。
 //        if (font != null) {
 //            this.font = new java.awt.Font(font.getFontName(), Font.BOLD, font.getFontHeight() / 20 + 4);
 //        }
