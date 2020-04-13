@@ -1,58 +1,44 @@
 package util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import result.Result;
-import writer.text.TextWriter;
-import writer.excel.XLSWriter;
-
 /**
  * Created by JasonFitch on 9/12/2019.
  */
 public class FileUtils {
 
-    public static void writeResults(List<Result> results, String outDir, int matchLengthInt) throws IOException {
-        writeResults(results, outDir, matchLengthInt, Boolean.parseBoolean(Constants.DEFAULT_CAPTURE_EXCEL));
-    }
+    public static void deleteFile(File file) {
+        if (!file.exists()) {
+            return;
+        }
 
-    public static void writeResults(List<Result> results, String outDir, int matchLengthInt, boolean captureExcelBool) throws IOException {
-
-        for (Result result : results) {
-            //处理在前的文件，如果存在就删除并新建，否则直接新建
-            String fileNamePath = result.getFileNamePath();
-            File tempDir = new File(fileNamePath + Constants.DEFAULT_RESULT_DIR_SUFFIX);
-            if (tempDir.exists()) {
-                FileUtils.deleteFile(tempDir);
-            }
-            tempDir.mkdirs();
-
-            //写入提取的异常信息
-            TextWriter.write(result, tempDir);
-
-            //写入统计的Excel
-            XLSWriter.write(result, tempDir, matchLengthInt, captureExcelBool);
+        if (file.isFile()) {
+            file.delete();
         }
     }
 
-    public static void deleteFile(File file) {
+    public static void deleteFileRecursion(File file) {
+        if (!file.exists()) {
+            return;
+        }
+
         if (file.isFile()) {
             file.delete();
         } else {
+            String absoluteParent = file.getAbsolutePath();
             String[] childFilePaths = file.list();
             for (String childFilePath : childFilePaths) {
-                File childFile = new File(file.getAbsolutePath() + "\\" + childFilePath);
-                deleteFile(childFile);
+                File childFile = new File(absoluteParent, childFilePath);
+                deleteFileRecursion(childFile);
             }
             file.delete();
         }
     }
-
 
     public static void addFile(File file, List<String> logFiles) {
         String filePath = file.getPath();

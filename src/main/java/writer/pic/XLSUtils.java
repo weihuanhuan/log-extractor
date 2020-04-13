@@ -1,4 +1,4 @@
-package writer.excel.pic;
+package writer.pic;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;

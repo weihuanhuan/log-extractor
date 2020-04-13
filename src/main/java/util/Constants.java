@@ -12,7 +12,7 @@ public class Constants {
 
     public static String DEFAULT_LOG_TYPE = "bes95";
 
-    public static String DEFAULT_OUT_DIR = System.getProperty("user.dir");
+    public static String DEFAULT_MERGED_DIR = System.getProperty("user.dir");
 
     public static String DEFAULT_MATCH_LENGTH = "100";
 
@@ -33,5 +33,9 @@ public class Constants {
     public static String DEFAULT_LOG_FILED_SEPARATOE = "|";
 
     public static String CHARSET_NAME_ISO_8859_1 = "ISO-8859-1";
+
+    public static String DEFAULT_FILENAME = "exception-statistic";
+
+    public static String DEFAULT_MERGE_FILENAME = "exception-merge-statistic";
 
 }

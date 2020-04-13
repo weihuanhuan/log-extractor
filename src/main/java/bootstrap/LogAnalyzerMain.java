@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import util.ResultUtils;
 
 /**
  * Created by JasonFitch on 9/7/2019.
@@ -69,9 +70,9 @@ public class LogAnalyzerMain {
         if (ReaderUtils.isBlank(logEncoding)) {
             logEncoding = Constants.DEFAULT_LOG_ENCODING;
         }
-        String outDir = commandLine.getOptionValue(CommandOptions.OUT_DIR);
+        String outDir = commandLine.getOptionValue(CommandOptions.MERGED_DIR);
         if (ReaderUtils.isBlank(outDir)) {
-            outDir = Constants.DEFAULT_OUT_DIR;
+            outDir = Constants.DEFAULT_MERGED_DIR;
         }
         String matchLength = commandLine.getOptionValue(CommandOptions.MATCH_LENGTH);
         if (ReaderUtils.isBlank(matchLength)) {
@@ -152,7 +153,7 @@ public class LogAnalyzerMain {
 
     //打印统计结果
     private void printResult(List<Result> results, String outDir, int matchLengthInt, boolean captureExcelBool) throws IOException {
-        FileUtils.writeResults(results, outDir, matchLengthInt, captureExcelBool);
+        ResultUtils.writeResults(results, outDir, matchLengthInt, captureExcelBool);
     }
 
     //按照类型调用对应的解析器
@@ -212,10 +213,10 @@ public class LogAnalyzerMain {
         encoding.setRequired(false);
         options.addOption(encoding);
 
-//        Option output = new Option("d", CommandOptions.OUT_DIR, true,
-//                "Optional, String, result output dir, default <" + Constants.DEFAULT_OUT_DIR + "> .");
-//        output.setRequired(false);
-//        options.addOption(output);
+        Option output = new Option("d", CommandOptions.MERGED_DIR, true,
+                "Optional, String, merged result output dir, default <" + Constants.DEFAULT_MERGED_DIR + "> .");
+        output.setRequired(false);
+        options.addOption(output);
 
         Option length = new Option("n", CommandOptions.MATCH_LENGTH, true,
                 "Optional, Integer, character length that matching the same exception, default <" + Constants.DEFAULT_MATCH_LENGTH + "> .");
@@ -261,10 +262,10 @@ public class LogAnalyzerMain {
             System.out.println(file.normalize().toAbsolutePath());
         }
 
-//        System.out.println();
-//        System.out.println("Statistic result file path:");
-//        Path ourDir = Paths.get(outDir);
-//        System.out.println(ourDir.normalize().toAbsolutePath());
+        System.out.println();
+        System.out.println("Statistic merged result file path:");
+        Path ourDir = Paths.get(outDir);
+        System.out.println(ourDir.normalize().toAbsolutePath());
 
         System.out.println();
     }

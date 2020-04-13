@@ -38,9 +38,9 @@ public class ArgsTest {
         if (ReaderUtils.isBlank(logEncoding)) {
             logEncoding = Constants.DEFAULT_LOG_ENCODING;
         }
-        String outDir = commandLine.getOptionValue(CommandOptions.OUT_DIR);
+        String outDir = commandLine.getOptionValue(CommandOptions.MERGED_DIR);
         if (ReaderUtils.isBlank(outDir)) {
-            outDir = Constants.DEFAULT_OUT_DIR;
+            outDir = Constants.DEFAULT_MERGED_DIR;
         }
         String matchLength = commandLine.getOptionValue(CommandOptions.MATCH_LENGTH);
         if (ReaderUtils.isBlank(matchLength)) {

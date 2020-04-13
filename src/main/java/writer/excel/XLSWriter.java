@@ -1,33 +1,25 @@
 package writer.excel;
 
-import result.ExceptionInfoPair;
-import result.Result;
-import result.StatisticResult;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import util.FileUtils;
-import writer.excel.pic.XLSUtils;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import result.ExceptionInfoPair;
+import result.Result;
+import result.StatisticResult;
 
 public class XLSWriter {
 
     static private int EXCEL_MAX_COLUMN_WIDTH = 255;
-    static private String EXCEL_SUFFIX = ".xlsx";
+    public static String EXCEL_SUFFIX = ".xlsx";
 
-    static private String EXCEL_FILENAME = "exception-statistic";
-
-    public static void write(Result result, File outDir, int matchLength, boolean captureExcelBool) throws IOException {
+    public static File write(Result result, File excelFile, int matchLength) throws IOException {
 
         StatisticResult realResult = (StatisticResult) result;
         String fileNamePath = realResult.getFileNamePath();
@@ -78,41 +70,31 @@ public class XLSWriter {
             dataRow.createCell(2).setCellValue(value);
         }
 
-        //按时间生成表格文件名后缀
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
-        String date = df.format(new Date());
-
         try {
-            //如果存在，删除旧的excel文件
-            File excelFile = new File(outDir, EXCEL_FILENAME + "-" + date + EXCEL_SUFFIX);
-            if (excelFile.exists()) {
-                FileUtils.deleteFile(excelFile);
-            }
-
             //写入到文件
             FileOutputStream outputStream = new FileOutputStream(excelFile);
             wb.write(outputStream);
             outputStream.flush();
             outputStream.close();
             wb.close();
-            System.out.println("statistics excel file: " + excelFile.getCanonicalPath());
-
-            if (!captureExcelBool) {
-                return;
-            }
-
-            //如果存在，删除旧的excel文件
-            File picFile = new File(outDir, EXCEL_FILENAME + "-" + date + ".png");
-            if (picFile.exists()) {
-                FileUtils.deleteFile(picFile);
-            }
-
-            //转换为图片
-            XLSUtils.toImage(excelFile, picFile);
-            System.out.println("statistics picture file: " + picFile.getCanonicalPath());
         } catch (Exception e) {
             System.out.println(e);
+            return null;
         }
 
+        return excelFile;
     }
+
+    public static void allToOne(List<File> resultFiles, File mergeFile) {
+        if (resultFiles == null || resultFiles.isEmpty()) {
+            return;
+        }
+
+        for (File file : resultFiles) {
+            if (!file.isFile() || !file.canRead()) {
+                continue;
+            }
+        }
+    }
+
 }

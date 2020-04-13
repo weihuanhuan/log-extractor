@@ -3,7 +3,6 @@ package test;
 import interceptor.CounterInterceptor;
 import interceptor.ExceptionInfoPairInterceptor;
 import interceptor.Interceptor;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,14 +10,13 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import parser.LogParser;
 import parser.WebLogicLogParser2;
 import result.ExceptionInfoPair;
 import result.Result;
 import result.StatisticResult;
 import util.Constants;
-import util.FileUtils;
+import util.ResultUtils;
 
 /**
  * Created by JasonFitch on 9/7/2019.
@@ -47,7 +45,7 @@ public class ExceptionInfoPairParserTest {
 
         List<Result> results = new ArrayList<>();
         results.add(result);
-        FileUtils.writeResults(results, "unused-dir", matchLength);
+        ResultUtils.writeResults(results, "unused-dir", matchLength);
 
         //JF 编码问题如何处理？
         //FileUtils.writeResults(results, "unused-dir", Constants.DEFAULT_LOG_ENCODING, matchLength);
