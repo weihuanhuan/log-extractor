@@ -36,6 +36,6 @@ public class Constants {
 
     public static String DEFAULT_FILENAME = "exception-statistic";
 
-    public static String DEFAULT_MERGE_FILENAME = "exception-merge-statistic";
+    public static String DEFAULT_MERGE_FILENAME = "exception-statistic-merged";
 
 }

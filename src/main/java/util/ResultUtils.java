@@ -27,27 +27,30 @@ public class ResultUtils {
             String fileNamePath = result.getFileNamePath();
             File resultDir = FileNameHelper.getResultDir(fileNamePath);
 
-            //写入提取的异常信息
-            TextWriter.write(result, resultDir);
-
             //按时间生成文件名后缀
             String timestamp = FileNameHelper.getTimestamp(new Date());
+
+            //写入提取的异常信息
+            File textFile = FileNameHelper.getTextFile(resultDir, timestamp);
+            TextWriter.write(result, textFile);
+            System.out.println("Text file:    " + textFile.getCanonicalPath());
 
             //写入统计的Excel
             File excelFile = FileNameHelper.getExcelFile(resultDir, timestamp);
             XLSWriter.write(result, excelFile, matchLengthInt);
-            System.out.println("statistics excel file: " + excelFile.getCanonicalPath());
+            System.out.println("Excel file:   " + excelFile.getCanonicalPath());
 
-            //转换为图片
+            //转换excel为图片
             if (captureExcelBool) {
                 File picFile = FileNameHelper.getPicFile(resultDir, timestamp);
                 PictureWriter.writeExcel(excelFile, picFile);
-                System.out.println("statistics picture file: " + picFile.getCanonicalPath());
+                System.out.println("Picture file: " + picFile.getCanonicalPath());
             }
 
             if (excelFile != null) {
                 resultFiles.add(excelFile);
             }
+            System.out.println();
         }
 
         boolean merge = true;
@@ -56,10 +59,9 @@ public class ResultUtils {
         }
 
         //merge each excel to one.
-        System.out.println();
         String timestamp = FileNameHelper.getTimestamp(new Date());
         File file = FileNameHelper.getMergedExcelFile(new File(outDir), timestamp);
         XLSWriter.allToOne(resultFiles, file);
-        System.out.println("statistics merged excel file: " + file.getCanonicalPath());
+        System.out.println("Merged excel file: " + file.getCanonicalPath());
     }
 }

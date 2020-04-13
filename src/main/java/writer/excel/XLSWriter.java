@@ -90,13 +90,10 @@ public class XLSWriter {
             return;
         }
 
-        for (File file : resultFiles) {
-            if (!file.isFile() || !file.canRead()) {
-                continue;
-            }
-
-            //TODO merged excel file
+        try {
+            XLSMerger.merge(resultFiles, mergeFile);
+        } catch (IOException e) {
+            System.out.println(e);
         }
     }
-
 }

@@ -5,11 +5,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import writer.excel.XLSWriter;
 import writer.pic.PictureWriter;
+import writer.text.TextWriter;
 
 /**
  * Created by JasonFitch on 4/13/2020.
  */
 public class FileNameHelper {
+
+    public static File getTextFile(File outDir, String date) {
+        //如果存在，删除旧的text文件
+        File excelFile = new File(outDir, Constants.DEFAULT_FILENAME + "-" + date + TextWriter.TEXT_SUFFIX);
+        checkResultFile(excelFile);
+        return excelFile;
+    }
 
     public static File getExcelFile(File outDir, String date) {
         //如果存在，删除旧的excel文件
@@ -33,6 +41,11 @@ public class FileNameHelper {
     }
 
     public static void checkResultFile(File file) {
+        File parentFile = file.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+        }
+
         if (file.exists()) {
             FileUtils.deleteFile(file);
         }

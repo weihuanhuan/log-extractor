@@ -123,14 +123,16 @@ public class LogAnalyzerMain {
         printArgs(logType, logFiles, logEncoding, outDir
                 , matchLengthInt, excludeRegex, compressDigitalLengthInt, captureExcelBool);
 
-        System.out.println("Begin Analyze...");
         //执行分析
+        System.out.println("Begin Analyze...");
         List<Result> results = invokeAnalyzer(logType, logFiles, logEncoding, matchLengthInt, compressDigitalLengthInt);
-
-        System.out.println("Analyze Finished...");
+        System.out.println("Analyze Finished！");
+        System.out.println();
 
         //打印分析结果
+        System.out.println("Handle Result...");
         printResult(results, outDir, matchLengthInt, captureExcelBool);
+        System.out.println("Result Written！");
     }
 
     public static List<String> getAllLogFileRecursion(List<String> logDirs) {
@@ -244,12 +246,12 @@ public class LogAnalyzerMain {
     //打印参数信息
     public void printArgs(String logType, List<String> logFileList, String logEncoding, String outDir,
                           int matchLength, String excludeRegex, int compressDigitalLengthInt, boolean captureExcelBool) {
-        System.out.println("user.dir    : " + System.getProperty("user.dir"));
+        Path toAbsolutePath = Paths.get(outDir).normalize().toAbsolutePath();
 
-        System.out.println();
         System.out.println("Analyzer runtime arguments info:");
         System.out.println("log-type       : " + logType);
         System.out.println("log-encoding   : " + logEncoding);
+        System.out.println("merged-dir     : " + toAbsolutePath);
         System.out.println("match-length   : " + matchLength);
         System.out.println("exclude-regex  : " + excludeRegex);
         System.out.println("compress-length: " + compressDigitalLengthInt);
@@ -261,11 +263,6 @@ public class LogAnalyzerMain {
             Path file = Paths.get(f);
             System.out.println(file.normalize().toAbsolutePath());
         }
-
-        System.out.println();
-        System.out.println("Statistic merged result file path:");
-        Path ourDir = Paths.get(outDir);
-        System.out.println(ourDir.normalize().toAbsolutePath());
 
         System.out.println();
     }

@@ -27,6 +27,7 @@ hs_err_pid*
 out/
 target/
 0906/
+nonexistence/
 
 **/*.iml
 **/*~
