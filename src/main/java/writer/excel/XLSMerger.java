@@ -36,6 +36,8 @@ public class XLSMerger {
                 XSSFSheet newSheet = mergedExcel.createSheet(oldSheet.getSheetName());
                 copySheet(mergedExcel, oldSheet, newSheet);
             }
+
+            fromExcel.close();
             inputStream.close();
         }
 
