@@ -6,11 +6,6 @@ import analyzer.BESAnalyzer95;
 import analyzer.ExceptionAnalyzer;
 import analyzer.WebLogicAnalyzer;
 import analyzer.WebLogicAnalyzer2;
-
-import java.io.File;
-import java.util.ArrayList;
-
-import result.Result;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -19,15 +14,15 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import util.Constants;
-import util.ReaderUtils;
 import util.FileUtils;
+import util.ReaderUtils;
 
-import java.io.IOException;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import util.ResultUtils;
 
 /**
  * Created by JasonFitch on 9/7/2019.
@@ -125,14 +120,9 @@ public class LogAnalyzerMain {
 
         //执行分析
         System.out.println("Begin Analyze...");
-        List<Result> results = invokeAnalyzer(logType, logFiles, logEncoding, matchLengthInt, compressDigitalLengthInt);
-        System.out.println("Analyze Finished！");
-        System.out.println();
-
-        //打印分析结果
-        System.out.println("Handle Result...");
-        printResult(results, outDir, matchLengthInt, captureExcelBool);
-        System.out.println("Result Written！");
+        invokeAnalyzer(logType, logFiles, logEncoding,
+                matchLengthInt, captureExcelBool, outDir, compressDigitalLengthInt);
+        System.out.println("Finished Analyze...");
     }
 
     public static List<String> getAllLogFileRecursion(List<String> logDirs) {
@@ -153,30 +143,25 @@ public class LogAnalyzerMain {
         return logFiles;
     }
 
-    //打印统计结果
-    private void printResult(List<Result> results, String outDir, int matchLengthInt, boolean captureExcelBool) throws IOException {
-        ResultUtils.writeResults(results, outDir, matchLengthInt, captureExcelBool);
-    }
-
     //按照类型调用对应的解析器
-    private List<Result> invokeAnalyzer(String logType, List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) throws Exception {
+    private void invokeAnalyzer(String logType, List<String> logFileList, String logEncoding, int matchLength, boolean captureExcelBool, String outDir, int compressDigitalLength) throws Exception {
 
         Analyzer analyzer;
         if (logType.equalsIgnoreCase("bes")) {
-            analyzer = new BESAnalyzer(logFileList, logEncoding, matchLength, compressDigitalLength);
+            analyzer = new BESAnalyzer(logFileList, logEncoding, matchLength, captureExcelBool, outDir, compressDigitalLength);
         } else if (logType.equalsIgnoreCase("bes95")) {
-            analyzer = new BESAnalyzer95(logFileList, logEncoding, matchLength, compressDigitalLength);
+            analyzer = new BESAnalyzer95(logFileList, logEncoding, matchLength, captureExcelBool, outDir, compressDigitalLength);
         } else if (logType.equalsIgnoreCase("weblogic")) {
-            analyzer = new WebLogicAnalyzer(logFileList, logEncoding, matchLength, compressDigitalLength);
+            analyzer = new WebLogicAnalyzer(logFileList, logEncoding, matchLength, captureExcelBool, outDir, compressDigitalLength);
         } else if (logType.equalsIgnoreCase("weblogic2")) {
-            analyzer = new WebLogicAnalyzer2(logFileList, logEncoding, matchLength, compressDigitalLength);
+            analyzer = new WebLogicAnalyzer2(logFileList, logEncoding, matchLength, captureExcelBool, outDir, compressDigitalLength);
         } else if (logType.equalsIgnoreCase("exception")) {
-            analyzer = new ExceptionAnalyzer(logFileList, logEncoding, matchLength, compressDigitalLength);
+            analyzer = new ExceptionAnalyzer(logFileList, logEncoding, matchLength, captureExcelBool, outDir, compressDigitalLength);
         } else {
             throw new Exception("Invalid log type, please check it !");
         }
 
-        return analyzer.analyze();
+        analyzer.analyze();
     }
 
     //处理可执行文件的入参

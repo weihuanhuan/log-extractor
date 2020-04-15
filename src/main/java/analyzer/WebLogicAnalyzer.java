@@ -8,8 +8,8 @@ import java.util.List;
 
 public class WebLogicAnalyzer extends AbstractAnalyzer {
 
-    public WebLogicAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
-        super(logFileList, logEncoding, matchLength, compressDigitalLength);
+    public WebLogicAnalyzer(List<String> logFileList, String logEncoding, int matchLength, boolean captureExcelBool, String outDir, int compressDigitalLength) {
+        super(logFileList, logEncoding, matchLength, compressDigitalLength, captureExcelBool, outDir);
     }
 
     @Override

@@ -1,14 +1,16 @@
 package analyzer;
 
+import executor.TaskExecutor;
 import interceptor.Interceptor;
-import result.Result;
 import parser.LogParser;
 import parser.ParserException;
+import task.AnalysisTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public abstract class AbstractAnalyzer implements Analyzer {
 
@@ -16,23 +18,29 @@ public abstract class AbstractAnalyzer implements Analyzer {
     protected String logEncoding;
     protected int matchLength;
     protected int compressDigitalLength;
+    protected boolean captureExcelBool;
+    protected String outDir;
 
     private LogParser logParser;
     private List<Interceptor> interceptors = new LinkedList<>();
 
-    protected List<Result> results = new LinkedList<>();
+    private TaskExecutor taskExecutor;
 
-    public AbstractAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
+    public AbstractAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength, boolean captureExcelBool, String outDir) {
         this.logFileList = logFileList;
         this.logEncoding = logEncoding;
         this.matchLength = matchLength;
         this.compressDigitalLength = compressDigitalLength;
+        this.captureExcelBool = captureExcelBool;
+        this.outDir = outDir;
+        taskExecutor = new TaskExecutor();
     }
 
     abstract public void initAnalyzer(String fileCanonicalPath);
 
     @Override
-    public List<Result> analyze() throws IOException, ParserException {
+    public void analyze() throws IOException, ParserException {
+        taskExecutor.init(matchLength, captureExcelBool, outDir);
 
         for (String f : logFileList) {
             File file = new File(f);
@@ -41,7 +49,6 @@ public abstract class AbstractAnalyzer implements Analyzer {
                 System.out.println("File " + fileCanonicalPath + " does not exist, skip it!");
                 continue;
             }
-            System.out.println("Process " + fileCanonicalPath);
 
             //初始化解析器
             this.logParser = null;
@@ -59,18 +66,16 @@ public abstract class AbstractAnalyzer implements Analyzer {
                 logParser.setHandler(interceptor);
             }
 
-            //处理
-            logParser.parse();
-
-            //取回结果
-            for (Interceptor interceptor : interceptors) {
-                Result result = interceptor.getResult();
-                if (result != null) {
-                    results.add(result);
-                }
-            }
+            AnalysisTask analysisTask = new AnalysisTask(fileCanonicalPath, logParser,
+                    interceptors.toArray(new Interceptor[interceptors.size()]));
+            taskExecutor.submit(analysisTask);
         }
-        return results;
+
+        try {
+            taskExecutor.waitFinish();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

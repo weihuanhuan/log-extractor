@@ -45,7 +45,7 @@ public class ExceptionInfoPairParserTest {
 
         List<Result> results = new ArrayList<>();
         results.add(result);
-        ResultUtils.writeResults(results, "unused-dir", matchLength);
+        ResultUtils.writeResults(results, matchLength);
 
         //JF 编码问题如何处理？
         //FileUtils.writeResults(results, "unused-dir", Constants.DEFAULT_LOG_ENCODING, matchLength);

@@ -19,7 +19,7 @@ public class XLSWriter {
     static private int EXCEL_MAX_COLUMN_WIDTH = 255;
     public static String EXCEL_SUFFIX = ".xlsx";
 
-    public static File write(Result result, File excelFile, int matchLength) throws IOException {
+    public static File write(Result result, File excelFile, int matchLength) {
 
         StatisticResult realResult = (StatisticResult) result;
         String fileNamePath = realResult.getFileNamePath();

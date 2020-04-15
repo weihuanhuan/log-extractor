@@ -10,8 +10,8 @@ import result.StatisticResult;
  */
 public class ExceptionAnalyzer extends AbstractAnalyzer implements Analyzer {
 
-    public ExceptionAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength) {
-        super(logFileList, logEncoding, matchLength, compressDigitalLength);
+    public ExceptionAnalyzer(List<String> logFileList, String logEncoding, int matchLength, boolean captureExcelBool, String outDir, int compressDigitalLength) {
+        super(logFileList, logEncoding, matchLength, compressDigitalLength, captureExcelBool, outDir);
     }
 
     @Override
