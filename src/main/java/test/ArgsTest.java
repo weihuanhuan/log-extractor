@@ -1,7 +1,7 @@
 package test;
 
 import bootstrap.LogAnalyzerMain;
-import bootstrap.LogCommandLineHelper;
+import util.CommandLineHelper;
 import bootstrap.LogCommandLineRuntime;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class ArgsTest {
         args = new String[]{"-f", "./0906/guanli/server.log", "-n", "100"};
 
         //参数验证
-        LogCommandLineRuntime logCommandLineRuntime = LogCommandLineHelper.buildCommandLineRuntime(args);
+        LogCommandLineRuntime logCommandLineRuntime = CommandLineHelper.buildCommandLineRuntime(args);
 
         //处理日志文件所在的目录, 寻找可能要处理的日志文件
         List<String> logFiles = logAnalyzerMain.getHandleLogFile(logCommandLineRuntime);
@@ -30,6 +30,6 @@ public class ArgsTest {
         }
 
         //打印参数
-        LogCommandLineHelper.printArgs(logCommandLineRuntime);
+        CommandLineHelper.printArgs(logCommandLineRuntime);
     }
 }

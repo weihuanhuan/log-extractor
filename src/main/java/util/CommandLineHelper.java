@@ -1,5 +1,9 @@
-package bootstrap;
+package util;
 
+import bootstrap.LogAnalyzerMain;
+import bootstrap.LogCommandLine;
+import bootstrap.LogCommandLineRuntime;
+import bootstrap.LogOption;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +19,7 @@ import org.apache.commons.cli.ParseException;
 /**
  * Created by JasonFitch on 4/16/2020.
  */
-public class LogCommandLineHelper {
+public class CommandLineHelper {
 
     private static Class commandLineClass = LogCommandLine.class;
 

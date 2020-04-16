@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import util.Constants;
 import util.FileUtils;
+import util.CommandLineHelper;
 import util.ReaderUtils;
 
 /**
@@ -41,7 +42,7 @@ public class LogAnalyzerMain {
 
     public void processOnce(String[] args) throws Exception {
         //参数验证
-        LogCommandLineRuntime logCommandLineRuntime = LogCommandLineHelper.buildCommandLineRuntime(args);
+        LogCommandLineRuntime logCommandLineRuntime = CommandLineHelper.buildCommandLineRuntime(args);
 
         //处理日志文件所在的目录, 寻找可能要处理的日志文件
         List<String> logFiles = getHandleLogFile(logCommandLineRuntime);
@@ -51,7 +52,7 @@ public class LogAnalyzerMain {
         }
 
         //打印参数
-        LogCommandLineHelper.printArgs(logCommandLineRuntime);
+        CommandLineHelper.printArgs(logCommandLineRuntime);
 
         //执行分析
         System.out.println("Begin Analyze...");

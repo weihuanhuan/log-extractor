@@ -1,6 +1,6 @@
 package test;
 
-import bootstrap.LogCommandLineHelper;
+import util.CommandLineHelper;
 import bootstrap.LogCommandLineOptions;
 import bootstrap.LogCommandLineRuntime;
 import interceptor.CounterInterceptor;
@@ -37,7 +37,7 @@ public class ExceptionInfoPairParserTest {
         StatisticResult statisticResult = new StatisticResult();
         statisticResult.setFileNamePath(absolutePath);
 
-        LogCommandLineRuntime lineRuntime = LogCommandLineHelper.buildCommandLineRuntime();
+        LogCommandLineRuntime lineRuntime = CommandLineHelper.buildCommandLineRuntime();
         Interceptor interceptor = new ExceptionInfoPairInterceptor(lineRuntime, statisticResult);
         logParser.setHandler(interceptor);
         logParser.setHandler(new CounterInterceptor());
