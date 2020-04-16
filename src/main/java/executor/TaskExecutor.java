@@ -39,17 +39,10 @@ public class TaskExecutor {
     }
 
     public void waitFinish(long timeout) throws TimeoutException {
-        long start = System.currentTimeMillis();
-        while (!executor.isTerminated()) {
-            try {
-                long current = System.currentTimeMillis();
-                if (current - start > timeout) {
-                    throw new TimeoutException("Parse Timeout!");
-                }
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

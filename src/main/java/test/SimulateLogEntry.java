@@ -52,6 +52,9 @@ public class SimulateLogEntry {
             "\tat com.bes.enterprise.web.connector.crane.WorkerThreadImpl.run(WorkerThreadImpl.java:129) [bes-core.jar:08.00.00]\n" +
             "|####";
 
+    public static String ERROR_LOG = "##|2020-04-16 00:46:28.997|INFO|javax.enterprise.system.std|_ThreadID=91;_ThreadName=http-thread-pool-40|2020-04-16 00:46:28.997 UTC+0800 | ERROR | http-thread-pool-40 | com.huawei.csc.usf.adapter.ebus.bus.EBUSBusConnector | connect to server failed. server address: 10.32.36.103:20000  \n" +
+            "|##";
+
     public static void main(String[] args) {
 
         System.out.println(BES_LOG);

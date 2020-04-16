@@ -123,7 +123,7 @@ public class LogCommandLineRuntime {
         System.out.println("match-length   : " + matchLength);
         System.out.println("exclude-regex  : " + excludeRegex);
         System.out.println("compress-length: " + compressLength);
-        System.out.println("capture-excel  : " + captureExcel);
+        System.out.println("snapshot-excel : " + captureExcel);
         System.out.println("addition-match : " + additionalMatch);
 
         System.out.println();

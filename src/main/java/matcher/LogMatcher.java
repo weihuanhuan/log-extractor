@@ -34,14 +34,12 @@ public class LogMatcher {
     static public String CAUSED_BY = "Caused by: ";
 
     public static boolean printMatchesWholeEntry(String string, String regularExpression) {
-        Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(string);
+        Matcher matcher = getMatcher(string, regularExpression);
         return matcher.matches();
     }
 
     public static void printMatchEchoGroups(String string, String regularExpression) {
-        Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(string);
+        Matcher matcher = getMatcher(string, regularExpression);
         while (matcher.find()) {
             int count = matcher.groupCount();
             System.out.println("#####groupCount:" + matcher.groupCount());
@@ -50,9 +48,8 @@ public class LogMatcher {
         }
     }
 
-    public static List<MatchResult> getMatchResult(String string, String regularExpression) {
-        Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(string);
+    public static List<MatchResult> getMatchAllResult(String string, String regularExpression) {
+        Matcher matcher = getMatcher(string, regularExpression);
 
         List<MatchResult> result = new LinkedList<>();
         while (matcher.find()) {
@@ -60,6 +57,30 @@ public class LogMatcher {
         }
 
         return result;
+    }
+
+    public static List<MatchResult> getMatchOneResult(String string, String regularExpression) {
+        Matcher matcher = getMatcher(string, regularExpression);
+
+        List<MatchResult> result = new LinkedList<>();
+        if (matcher.find()) {
+            result.add(matcher.toMatchResult());
+        }
+
+        return result;
+    }
+
+    public static boolean isMatchContent(String string, String regularExpression) {
+        Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(string);
+        boolean matches = matcher.matches();
+        return matches;
+    }
+
+    public static Matcher getMatcher(String string, String regex) {
+        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(string);
+        return matcher;
     }
 
 }

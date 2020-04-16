@@ -5,6 +5,7 @@ import bootstrap.LogCommandLine;
 import bootstrap.LogCommandLineRuntime;
 import bootstrap.LogOption;
 import java.lang.reflect.Field;
+import java.util.Comparator;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -61,13 +62,14 @@ public class CommandLineHelper {
     //处理可执行文件的入参
     public static CommandLine parserCommandLineArgs(Options options, String[] args) {
         CommandLineParser parser = new DefaultParser();
-        HelpFormatter formatter = new HelpFormatter();
+        HelpFormatter helpFormatter = getHelpFormatter();
+
         CommandLine cmd = null;
         try {
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
             System.out.println(e.getMessage());
-            formatter.printHelp(mainClass.getSimpleName(), options);
+            helpFormatter.printHelp(" [OPTION]... -f FILE...", options);
             System.exit(1);
         }
         return cmd;
@@ -88,5 +90,27 @@ public class CommandLineHelper {
         Option option = new Option(opt, longOpt, hasArg, description);
         option.setRequired(require);
         return option;
+    }
+
+    private static HelpFormatter getHelpFormatter() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.setWidth(256);
+        //优先显示必填项, 然后按照长选项的字典顺序
+        formatter.setOptionComparator(new Comparator<Option>() {
+            @Override
+            public int compare(Option o1, Option o2) {
+                String o1LongOpt = o1.getLongOpt();
+                String o2LongOpt = o2.getLongOpt();
+                int compareTo = o1LongOpt.compareTo(o2LongOpt);
+                if (o1.isRequired()) {
+                    compareTo += 1024;
+                }
+                if (o2.isRequired()) {
+                    compareTo += 1024;
+                }
+                return compareTo;
+            }
+        });
+        return formatter;
     }
 }

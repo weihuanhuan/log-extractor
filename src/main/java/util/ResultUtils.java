@@ -53,9 +53,10 @@ public class ResultUtils {
         return resultFiles;
     }
 
-    public static File writeMergedResults(List<File> resultFiles, String outDir) {
+    public static File writeMergedResults(List<File> resultFiles, String mergedDir) {
         String timestamp = FileNameHelper.getTimestamp(new Date());
-        File file = FileNameHelper.getMergedExcelFile(new File(outDir), timestamp);
+        File mergedDirFile = new File(mergedDir);
+        File file = FileNameHelper.getMergedExcelFile(mergedDirFile, timestamp);
         XLSWriter.allToOne(resultFiles, file);
         return file;
     }

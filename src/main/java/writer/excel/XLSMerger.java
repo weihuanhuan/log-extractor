@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.poi.ss.usermodel.CellType;
@@ -15,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import util.FileNameHelper;
 
 /**
  * Created by JasonFitch on 4/13/2020.
@@ -24,28 +26,46 @@ public class XLSMerger {
     public static void merge(List<File> resultFiles, File mergeFile) throws IOException {
         XSSFWorkbook mergedExcel = new XSSFWorkbook();
 
-        // 遍历每个源excel文件，resultFiles为源文件的名称集合
-        for (File fromExcelName : resultFiles) {
-            InputStream inputStream = new FileInputStream(fromExcelName);
-            XSSFWorkbook fromExcel = new XSSFWorkbook(inputStream);
+        try {
+            // 遍历每个源excel文件，resultFiles为源文件的名称集合
+            for (File fromExcelName : resultFiles) {
+                InputStream inputStream = new FileInputStream(fromExcelName);
+                XSSFWorkbook fromExcel = new XSSFWorkbook(inputStream);
 
-            int length = fromExcel.getNumberOfSheets();
-            for (int i = 0; i < length; i++) {
-                // 遍历每个sheet
-                XSSFSheet oldSheet = fromExcel.getSheetAt(i);
-                XSSFSheet newSheet = mergedExcel.createSheet(oldSheet.getSheetName());
-                copySheet(mergedExcel, oldSheet, newSheet);
+                int length = fromExcel.getNumberOfSheets();
+                for (int i = 0; i < length; i++) {
+                    // 遍历每个sheet
+                    XSSFSheet fromSheet = fromExcel.getSheetAt(i);
+                    String fromSheetName = fromSheet.getSheetName();
+
+                    // excel中的每一个 sheetname 必须是唯一的。
+                    fromSheetName = avoidSheetNameConflict(mergedExcel, fromSheetName);
+
+                    XSSFSheet newSheet = mergedExcel.createSheet(fromSheetName);
+                    copySheet(mergedExcel, fromSheet, newSheet);
+                }
+
+                fromExcel.close();
+                inputStream.close();
             }
 
-            fromExcel.close();
-            inputStream.close();
+            //写入到新的excel文件
+            FileOutputStream fileOutputStream = new FileOutputStream(mergeFile);
+            mergedExcel.write(fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
+    }
 
-        //写入到新的excel文件
-        FileOutputStream fileOutputStream = new FileOutputStream(mergeFile);
-        mergedExcel.write(fileOutputStream);
-        fileOutputStream.flush();
-        fileOutputStream.close();
+    private static String avoidSheetNameConflict(XSSFWorkbook mergedExcel, String fromSheetName) {
+        String avoidConflictName = fromSheetName;
+        while (mergedExcel.getSheet(avoidConflictName) != null) {
+            String timestamp = FileNameHelper.getTimestamp(new Date());
+            avoidConflictName = fromSheetName + "-" + timestamp;
+        }
+        return avoidConflictName;
     }
 
     /**

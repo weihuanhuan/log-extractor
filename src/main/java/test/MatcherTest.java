@@ -7,6 +7,17 @@ public class MatcherTest {
     public static void main(String[] args) {
         testReg();
         testException();
+        testAdditionMatch();
+    }
+
+    private static void testAdditionMatch() {
+        System.out.println("#################################################################################");
+        String clientReg = "server failed";
+        String systemReg = "("+ clientReg  +")";
+        LogMatcher.printMatchEchoGroups(SimulateLogEntry.ERROR_LOG, systemReg);
+
+
+        LogMatcher.printMatchEchoGroups(".*server failed.* .*server failed.* .*server failed.*", systemReg);
     }
 
     private static void testReg() {

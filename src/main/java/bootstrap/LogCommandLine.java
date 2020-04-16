@@ -27,7 +27,8 @@ public class LogCommandLine {
     public String logEncoding;
 
     //JF annotation attribute value must be constant.
-    @LogOption(opt = LogCommandLineOptions.MERGED_DIR, longOpt = LogCommandLineOptions.MERGED_DIR_LONG)
+    @LogOption(opt = LogCommandLineOptions.MERGED_DIR, longOpt = LogCommandLineOptions.MERGED_DIR_LONG,
+            description = LogCommandLineOptions.MERGED_DIR_DESC)
     public String mergedDir = LogCommandLineOptions.MERGED_DIR_DEFAULT;
 
     @LogOption(opt = LogCommandLineOptions.MATCH_LENGTH, longOpt = LogCommandLineOptions.MATCH_LENGTH_LONG,

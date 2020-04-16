@@ -9,6 +9,7 @@ import analyzer.WebLogicAnalyzer2;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import util.Constants;
 import util.FileUtils;
 import util.CommandLineHelper;
@@ -52,12 +53,20 @@ public class LogAnalyzerMain {
         }
 
         //打印参数
+        logCommandLineRuntime.setLogFiles(logFiles);
         logCommandLineRuntime.printRuntimeArgs();
 
         //执行分析
         System.out.println("Begin Analyze...");
+        long start = System.currentTimeMillis();
         invokeAnalyzer(logCommandLineRuntime);
+        long end = System.currentTimeMillis();
         System.out.println("Finished Analyze...");
+        System.out.println();
+
+        //统计总共的执行时间
+        long toSeconds = TimeUnit.MILLISECONDS.toSeconds(end - start);
+        System.out.println("Total Analyze Time: " + toSeconds + " Seconds.");
     }
 
     public static List<String> getHandleLogFile(LogCommandLineRuntime lineRuntime) {
