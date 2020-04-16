@@ -1,8 +1,8 @@
 package test;
 
 import bootstrap.LogAnalyzerMain;
-import util.CommandLineHelper;
 import bootstrap.LogCommandLineRuntime;
+import util.CommandLineHelper;
 import java.util.List;
 
 /**
@@ -30,6 +30,6 @@ public class ArgsTest {
         }
 
         //打印参数
-        CommandLineHelper.printArgs(logCommandLineRuntime);
+        logCommandLineRuntime.printRuntimeArgs();
     }
 }

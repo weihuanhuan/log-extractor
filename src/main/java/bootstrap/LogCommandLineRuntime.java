@@ -1,5 +1,7 @@
 package bootstrap;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -109,5 +111,27 @@ public class LogCommandLineRuntime {
 
     public void setOriginalCommandline(LogCommandLine originalCommandline) {
         this.originalCommandline = originalCommandline;
+    }
+
+    //打印参数信息
+    public void printRuntimeArgs() {
+        Path toAbsolutePath = Paths.get(mergedDir).normalize().toAbsolutePath();
+        System.out.println("Analyzer runtime arguments info:");
+        System.out.println("log-type       : " + logType);
+        System.out.println("log-encoding   : " + logEncoding);
+        System.out.println("merged-dir     : " + toAbsolutePath);
+        System.out.println("match-length   : " + matchLength);
+        System.out.println("exclude-regex  : " + excludeRegex);
+        System.out.println("compress-length: " + compressLength);
+        System.out.println("capture-excel  : " + captureExcel);
+        System.out.println("addition-match : " + additionalMatch);
+
+        System.out.println();
+        System.out.println("Target files be processed:");
+        for (String f : logFiles) {
+            Path file = Paths.get(f);
+            System.out.println(file.normalize().toAbsolutePath());
+        }
+        System.out.println();
     }
 }

@@ -52,7 +52,7 @@ public class LogAnalyzerMain {
         }
 
         //打印参数
-        CommandLineHelper.printArgs(logCommandLineRuntime);
+        logCommandLineRuntime.printRuntimeArgs();
 
         //执行分析
         System.out.println("Begin Analyze...");

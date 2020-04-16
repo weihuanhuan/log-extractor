@@ -5,9 +5,6 @@ import bootstrap.LogCommandLine;
 import bootstrap.LogCommandLineRuntime;
 import bootstrap.LogOption;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -91,38 +88,5 @@ public class CommandLineHelper {
         Option option = new Option(opt, longOpt, hasArg, description);
         option.setRequired(require);
         return option;
-    }
-
-    //打印参数信息
-    public static void printArgs(LogCommandLineRuntime commandLineRuntime) {
-        String logType = commandLineRuntime.getLogType();
-        String logEncoding = commandLineRuntime.getLogEncoding();
-        String mergedDir = commandLineRuntime.getMergedDir();
-        Integer matchLength = commandLineRuntime.getMatchLength();
-        String excludeRegex = commandLineRuntime.getExcludeRegex();
-        Integer compressLength = commandLineRuntime.getCompressLength();
-        boolean captureExcel = commandLineRuntime.getCaptureExcel();
-        List<String> logFileList = commandLineRuntime.getLogFiles();
-        String additionalMatch = commandLineRuntime.getAdditionalMatch();
-
-        Path toAbsolutePath = Paths.get(mergedDir).normalize().toAbsolutePath();
-        System.out.println("Analyzer runtime arguments info:");
-        System.out.println("log-type       : " + logType);
-        System.out.println("log-encoding   : " + logEncoding);
-        System.out.println("merged-dir     : " + toAbsolutePath);
-        System.out.println("match-length   : " + matchLength);
-        System.out.println("exclude-regex  : " + excludeRegex);
-        System.out.println("compress-length: " + compressLength);
-        System.out.println("capture-excel  : " + captureExcel);
-        System.out.println("addition-match : " + additionalMatch);
-
-        System.out.println();
-        System.out.println("Target files be processed:");
-        for (String f : logFileList) {
-            Path file = Paths.get(f);
-            System.out.println(file.normalize().toAbsolutePath());
-        }
-
-        System.out.println();
     }
 }
