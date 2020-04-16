@@ -1,5 +1,6 @@
 package reader;
 
+import bootstrap.LogCommandLineOptions;
 import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import parser.ParserException;
-import util.Constants;
 import util.ReaderUtils;
 
 /**
@@ -25,7 +25,7 @@ public class InputStreamFileReader implements FileReader {
     public static int LF = '\n';
 
     public InputStreamFileReader() {
-        this.encoding = Constants.DEFAULT_LOG_ENCODING;
+        this.encoding = LogCommandLineOptions.LOG_ENCODING_DEFAULT;
     }
 
     public InputStreamFileReader(String encoding) {

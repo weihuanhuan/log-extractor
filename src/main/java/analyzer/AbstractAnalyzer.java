@@ -1,5 +1,6 @@
 package analyzer;
 
+import bootstrap.LogCommandLineRuntime;
 import executor.TaskExecutor;
 import interceptor.Interceptor;
 import parser.LogParser;
@@ -14,35 +15,26 @@ import java.util.concurrent.TimeoutException;
 
 public abstract class AbstractAnalyzer implements Analyzer {
 
-    private List<String> logFileList;
-    protected String logEncoding;
-    protected int matchLength;
-    protected int compressDigitalLength;
-    protected boolean captureExcelBool;
-    protected String outDir;
+    protected LogCommandLineRuntime lineRuntime;
 
     private LogParser logParser;
+
     private List<Interceptor> interceptors = new LinkedList<>();
 
     private TaskExecutor taskExecutor;
 
-    public AbstractAnalyzer(List<String> logFileList, String logEncoding, int matchLength, int compressDigitalLength, boolean captureExcelBool, String outDir) {
-        this.logFileList = logFileList;
-        this.logEncoding = logEncoding;
-        this.matchLength = matchLength;
-        this.compressDigitalLength = compressDigitalLength;
-        this.captureExcelBool = captureExcelBool;
-        this.outDir = outDir;
-        taskExecutor = new TaskExecutor();
+    public AbstractAnalyzer(LogCommandLineRuntime lineRuntime) {
+        this.lineRuntime = lineRuntime;
+        this.taskExecutor = new TaskExecutor();
     }
 
     abstract public void initAnalyzer(String fileCanonicalPath);
 
     @Override
     public void analyze() throws IOException, ParserException {
-        taskExecutor.init(matchLength, captureExcelBool, outDir);
+        taskExecutor.init(lineRuntime.getMatchLength(), lineRuntime.getCaptureExcel(), lineRuntime.getMergedDir());
 
-        for (String f : logFileList) {
+        for (String f : lineRuntime.getLogFiles()) {
             File file = new File(f);
             String fileCanonicalPath = file.getCanonicalPath();
             if (!file.exists()) {

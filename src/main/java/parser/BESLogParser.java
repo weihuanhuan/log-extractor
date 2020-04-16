@@ -3,7 +3,6 @@ package parser;
 import entry.BESLogRecord;
 import reader.InputStreamFileReader;
 import reader.Mark;
-import util.Constants;
 
 /**
  * Created by JasonFitch on 9/7/2019.
@@ -13,10 +12,6 @@ public class BESLogParser extends AbstractLogParser {
     protected String prefix;
     protected String split;
     protected String suffix;
-
-    public BESLogParser() {
-        this(Constants.DEFAULT_LOG_ENCODING);
-    }
 
     public BESLogParser(String encoding) {
         this.reader = new InputStreamFileReader(encoding);

@@ -1,5 +1,6 @@
 package interceptor;
 
+import bootstrap.LogCommandLineRuntime;
 import entry.LogRecord;
 import result.Result;
 import result.StatisticResult;
@@ -15,8 +16,8 @@ public class ExceptionCheckInterceptor extends AbstractInterceptor implements In
         matchLength = -1;
     }
 
-    public ExceptionCheckInterceptor(int matchLength, Result result) {
-        this.matchLength = matchLength;
+    public ExceptionCheckInterceptor(LogCommandLineRuntime lineRuntime, Result result) {
+        this.matchLength = lineRuntime.getMatchLength();
         this.result = result;
     }
 

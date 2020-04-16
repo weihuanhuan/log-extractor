@@ -1,12 +1,12 @@
 package test;
 
+import bootstrap.LogCommandLineOptions;
 import entry.LogRecord;
 import interceptor.ExceptionCheckInterceptor;
 import interceptor.CounterInterceptor;
 import parser.BESLogParser;
 import parser.LogParser;
 import result.StatisticResult;
-import util.Constants;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ public class InputStreamParserTest {
     public static void main(String[] args) throws IOException {
 
         String logFileName = "server-1.log";
-        LogParser logParser = new BESLogParser(Constants.DEFAULT_LOG_ENCODING);
+        LogParser logParser = new BESLogParser(LogCommandLineOptions.LOG_ENCODING_DEFAULT);
 
 //        String logFileName = "weblogic.log";
 //        LogParser logParser = new WebLogicLogParser(Constants.DEFAULT_LOG_ENCODING);

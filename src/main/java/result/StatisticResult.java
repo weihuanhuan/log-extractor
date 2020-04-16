@@ -1,7 +1,7 @@
 package result;
 
+import bootstrap.LogCommandLineOptions;
 import entry.LogRecord;
-import util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class StatisticResult implements Result {
     private Accumulator accumulator;
 
     public StatisticResult() {
-        this(Integer.parseInt(Constants.DEFAULT_COMPRESS_DIGITAL_LENGTH));
+        this(Integer.parseInt(LogCommandLineOptions.MATCH_LENGTH_DEFAULT));
     }
 
     public StatisticResult(int compressDigitalLength) {

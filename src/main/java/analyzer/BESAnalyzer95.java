@@ -1,13 +1,13 @@
 package analyzer;
 
-import java.util.List;
+import bootstrap.LogCommandLineRuntime;
 import parser.BESLogParser;
 import parser.BESLogParser95;
 
 public class BESAnalyzer95 extends BESAnalyzer {
 
-    public BESAnalyzer95(List<String> logFileList, String logEncoding, int matchLength, boolean captureExcelBool, String outDir, int compressDigitalLength) {
-        super(logFileList, logEncoding, matchLength, captureExcelBool, outDir, compressDigitalLength);
+    public BESAnalyzer95(LogCommandLineRuntime lineRuntime) {
+        super(lineRuntime);
     }
 
     @Override

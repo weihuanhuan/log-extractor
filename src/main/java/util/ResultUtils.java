@@ -1,5 +1,6 @@
 package util;
 
+import bootstrap.LogCommandLineOptions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import writer.pic.PictureWriter;
 public class ResultUtils {
 
     public static List<File> writeResults(List<Result> results, int matchLengthInt) throws IOException {
-        return writeResults(results, matchLengthInt, Boolean.parseBoolean(Constants.DEFAULT_CAPTURE_EXCEL));
+        return writeResults(results, matchLengthInt, Boolean.parseBoolean(LogCommandLineOptions.CAPTURE_EXCEL_DEFAULT));
     }
 
     public static List<File> writeResults(List<Result> results, int matchLengthInt, boolean captureExcelBool) throws IOException {

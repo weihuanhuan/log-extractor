@@ -2,16 +2,11 @@ package parser;
 
 import entry.BESLogRecord;
 import entry.BESLogRecord95;
-import util.Constants;
 
 /**
  * Created by JasonFitch on 9/7/2019.
  */
 public class BESLogParser95 extends BESLogParser {
-
-    public BESLogParser95() {
-        this(Constants.DEFAULT_LOG_ENCODING);
-    }
 
     public BESLogParser95(String encoding) {
         super(encoding);

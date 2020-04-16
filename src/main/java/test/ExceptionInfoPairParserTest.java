@@ -1,5 +1,8 @@
 package test;
 
+import bootstrap.LogCommandLineHelper;
+import bootstrap.LogCommandLineOptions;
+import bootstrap.LogCommandLineRuntime;
 import interceptor.CounterInterceptor;
 import interceptor.ExceptionInfoPairInterceptor;
 import interceptor.Interceptor;
@@ -15,7 +18,6 @@ import parser.WebLogicLogParser2;
 import result.ExceptionInfoPair;
 import result.Result;
 import result.StatisticResult;
-import util.Constants;
 import util.ResultUtils;
 
 /**
@@ -31,11 +33,12 @@ public class ExceptionInfoPairParserTest {
         String absolutePath = new File(logFileName).getAbsolutePath();
         logParser.addLogFile(new File(absolutePath));
 
-        int matchLength = Integer.parseInt(Constants.DEFAULT_MATCH_LENGTH);
+        int matchLength = Integer.parseInt(LogCommandLineOptions.MATCH_LENGTH_DEFAULT);
         StatisticResult statisticResult = new StatisticResult();
         statisticResult.setFileNamePath(absolutePath);
 
-        Interceptor interceptor = new ExceptionInfoPairInterceptor(matchLength, statisticResult);
+        LogCommandLineRuntime lineRuntime = LogCommandLineHelper.buildCommandLineRuntime();
+        Interceptor interceptor = new ExceptionInfoPairInterceptor(lineRuntime, statisticResult);
         logParser.setHandler(interceptor);
         logParser.setHandler(new CounterInterceptor());
 

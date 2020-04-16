@@ -1,15 +1,15 @@
 package parser;
 
+import bootstrap.LogCommandLineOptions;
 import entry.ExceptionLogRecord;
 import reader.RandomAccessFileReader;
-import util.Constants;
 
 /**
  * Created by JasonFitch on 9/11/2019.
  */
 public class ExceptionLogParser extends AbstractLogParser implements LogParser {
 
-    private int suffixMatchLength = Integer.valueOf(Constants.DEFAULT_MATCH_LENGTH);
+    private int suffixMatchLength = Integer.valueOf(LogCommandLineOptions.MATCH_LENGTH_DEFAULT);
 
     public ExceptionLogParser() {
         this.reader = new RandomAccessFileReader();

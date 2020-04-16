@@ -1,11 +1,11 @@
 package interceptor;
 
+import bootstrap.LogCommandLineRuntime;
 import entry.LogRecord;
 import entry.WebLogicRecord;
 import java.util.List;
 import java.util.regex.MatchResult;
 import matcher.LogMatcher;
-import result.Result;
 import result.StatisticResult;
 
 /**
@@ -15,12 +15,8 @@ public class ExceptionInfoPairInterceptor extends AbstractInterceptor implements
 
     private int matchLength;
 
-    public ExceptionInfoPairInterceptor() {
-        matchLength = -1;
-    }
-
-    public ExceptionInfoPairInterceptor(int matchLength, Result result) {
-        this.matchLength = matchLength;
+    public ExceptionInfoPairInterceptor(LogCommandLineRuntime lineRuntime, StatisticResult result) {
+        this.matchLength = lineRuntime.getMatchLength();
         this.result = result;
     }
 

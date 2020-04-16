@@ -1,5 +1,6 @@
 package reader;
 
+import bootstrap.LogCommandLineOptions;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -26,7 +27,7 @@ public class RandomAccessFileReader implements FileReader {
     private Queue<File> logFiles = new LinkedList<>();
 
     public RandomAccessFileReader() {
-        this(Constants.DEFAULT_LOG_ENCODING);
+        this(LogCommandLineOptions.LOG_ENCODING_DEFAULT);
     }
 
     public RandomAccessFileReader(String encoding) {
@@ -83,7 +84,7 @@ public class RandomAccessFileReader implements FileReader {
             }
 
             bytes = line.getBytes(Constants.CHARSET_NAME_ISO_8859_1);
-            result = new String(bytes, Constants.DEFAULT_LOG_ENCODING);
+            result = new String(bytes, LogCommandLineOptions.LOG_ENCODING_DEFAULT);
         } catch (IOException e) {
             throw e;
         }
@@ -100,7 +101,7 @@ public class RandomAccessFileReader implements FileReader {
         try {
             byte[] bytes = new byte[n];
             int read = randomAccessFile.read(bytes);
-            result = new String(bytes, Constants.DEFAULT_LOG_ENCODING);
+            result = new String(bytes, LogCommandLineOptions.LOG_ENCODING_DEFAULT);
 
             String replaceAll = result.replaceAll("\\n", "");
             int countLF = result.length() - replaceAll.length();
@@ -133,7 +134,7 @@ public class RandomAccessFileReader implements FileReader {
             randomAccessFile.seek(randomAccessFile.getFilePointer() - n);
             int read = randomAccessFile.read(bytes);
             randomAccessFile.seek(randomAccessFile.getFilePointer() - n);
-            back = new String(bytes, Constants.DEFAULT_LOG_ENCODING);
+            back = new String(bytes, LogCommandLineOptions.LOG_ENCODING_DEFAULT);
 
             String replaceAll = back.replaceAll("\\n", "");
             int countLF = back.length() - replaceAll.length();

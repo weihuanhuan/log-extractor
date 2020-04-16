@@ -1,12 +1,11 @@
 package test;
 
 import bootstrap.LogAnalyzerMain;
+import bootstrap.LogCommandLineOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.commons.cli.Options;
-import util.Constants;
 
 public class DirTestType {
 
@@ -14,10 +13,9 @@ public class DirTestType {
 
         //程序入口
         LogAnalyzerMain logAnalyzerMain = new LogAnalyzerMain();
-        Options options = logAnalyzerMain.setOptions();
 
         //测试参数
-        String mergedDir = Constants.DEFAULT_MERGED_DIR + "/" + "nonexistence";
+        String mergedDir = LogCommandLineOptions.MERGED_DIR_DEFAULT + "/" + "nonexistence";
         String[] args5 = new String[]{"-t", "bes", "-f", "./0906/web", "-d", mergedDir};
 
         List<String> commonOptions = new ArrayList<>();
@@ -33,7 +31,7 @@ public class DirTestType {
             finalOptions.addAll(commonOptions);
 
             System.out.println("############################################################################");
-            logAnalyzerMain.processOnce(options, finalOptions.toArray(new String[0]));
+            logAnalyzerMain.processOnce(finalOptions.toArray(new String[0]));
         }
 
     }
