@@ -49,38 +49,67 @@ public class LogMatcher {
     }
 
     public static List<MatchResult> getMatchAllResult(String string, String regularExpression) {
-        Matcher matcher = getMatcher(string, regularExpression);
+        Pattern pattern = getPattern(regularExpression);
+        return getMatchAllResult(string, pattern);
+    }
 
+    public static List<MatchResult> getMatchAllResult(String string, Pattern pattern) {
+        Matcher matcher = getMatcher(string, pattern);
+        return getMatchAllResult(matcher);
+    }
+
+    public static List<MatchResult> getMatchAllResult(Matcher matcher) {
         List<MatchResult> result = new LinkedList<>();
         while (matcher.find()) {
             result.add(matcher.toMatchResult());
         }
-
         return result;
     }
 
     public static List<MatchResult> getMatchOneResult(String string, String regularExpression) {
-        Matcher matcher = getMatcher(string, regularExpression);
+        Pattern pattern = getPattern(regularExpression);
+        return getMatchOneResult(string, pattern);
+    }
 
+    public static List<MatchResult> getMatchOneResult(String string, Pattern pattern) {
+        Matcher matcher = getMatcher(string, pattern);
+        return getMatchOneResult(matcher);
+    }
+
+    public static List<MatchResult> getMatchOneResult(Matcher matcher) {
         List<MatchResult> result = new LinkedList<>();
         if (matcher.find()) {
             result.add(matcher.toMatchResult());
         }
-
         return result;
     }
 
     public static boolean isMatchContent(String string, String regularExpression) {
-        Pattern pattern = Pattern.compile(regularExpression, Pattern.DOTALL);
+        Pattern pattern = getPattern(regularExpression);
+        return isMatchContent(string, pattern);
+    }
+
+    public static boolean isMatchContent(String string, Pattern pattern) {
         Matcher matcher = pattern.matcher(string);
-        boolean matches = matcher.matches();
-        return matches;
+        return isMatchContent(matcher);
+    }
+
+    public static boolean isMatchContent(Matcher matcher) {
+        return matcher.matches();
     }
 
     public static Matcher getMatcher(String string, String regex) {
-        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        Pattern pattern = getPattern(regex);
         Matcher matcher = pattern.matcher(string);
         return matcher;
+    }
+
+    public static Matcher getMatcher(String string, Pattern pattern) {
+        return pattern.matcher(string);
+    }
+
+    public static Pattern getPattern(String regex) {
+        return Pattern.compile(regex, Pattern.DOTALL);
     }
 
 }

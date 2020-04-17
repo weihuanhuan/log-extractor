@@ -5,6 +5,7 @@ import entry.LogRecord;
 import entry.WebLogicRecord;
 import java.util.List;
 import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
 import matcher.LogMatcher;
 import result.StatisticResult;
 import util.ReaderUtils;
@@ -15,13 +16,17 @@ import util.ReaderUtils;
 public class ExceptionInfoPairInterceptor extends AbstractInterceptor implements Interceptor {
 
     private int matchLength;
-    private String realAdditionalMatch;
+    private String additionalMatch;
+
+    private static Pattern exPattern;
+    private static Pattern adPattern;
 
     public ExceptionInfoPairInterceptor(LogCommandLineRuntime lineRuntime, StatisticResult result) {
         this.matchLength = lineRuntime.getMatchLength();
-        String additionalMatch = lineRuntime.getAdditionalMatch();
+        this.exPattern = LogMatcher.getPattern(LogMatcher.EXCEPTION_REG_ALL);
+        this.additionalMatch = lineRuntime.getAdditionalMatch();
         if (!ReaderUtils.isBlank(additionalMatch)) {
-            this.realAdditionalMatch = additionalMatch;
+            this.adPattern = LogMatcher.getPattern(additionalMatch);
         }
         this.result = result;
     }
@@ -42,7 +47,7 @@ public class ExceptionInfoPairInterceptor extends AbstractInterceptor implements
         String detail = logRecord.getDetail();
         hasException2 = fillResult(statisticResult, detail, matchLength);
 
-        if (!hasException1 && !hasException2 && !ReaderUtils.isBlank(realAdditionalMatch)) {
+        if (adPattern != null && !hasException1 && !hasException2) {
             hasException3 = fillAdditionResult(statisticResult, detail, matchLength);
         }
 
@@ -56,7 +61,7 @@ public class ExceptionInfoPairInterceptor extends AbstractInterceptor implements
     }
 
     private static boolean fillResult(StatisticResult statisticResult, String content, int matchLength) {
-        List<MatchResult> groups = LogMatcher.getMatchAllResult(content, LogMatcher.EXCEPTION_REG_ALL);
+        List<MatchResult> groups = LogMatcher.getMatchAllResult(content, exPattern);
         if (groups.isEmpty()) {
             return false;
         }
@@ -116,17 +121,17 @@ public class ExceptionInfoPairInterceptor extends AbstractInterceptor implements
 
     private boolean fillAdditionResult(StatisticResult statisticResult, String content, int matchLength) {
         // 简单正则，巨慢无比，如何优化？
-//        List<MatchResult> groups = LogMatcher.getMatchOneResult(content, realAdditionalMatch);
+//        List<MatchResult> groups = LogMatcher.getMatchOneResult(content, adPattern);
 //        if (groups.isEmpty()) {
 //            return false;
 //        }
 
-        boolean matchContent = LogMatcher.isMatchContent(content, realAdditionalMatch);
+        boolean matchContent = LogMatcher.isMatchContent(content, adPattern);
         if (!matchContent) {
             return false;
         }
 
-        String group = realAdditionalMatch;
+        String group = additionalMatch;
         String exceptionInfo = content;
         if (matchLength < exceptionInfo.length()) {
             exceptionInfo = exceptionInfo.substring(0, matchLength);
