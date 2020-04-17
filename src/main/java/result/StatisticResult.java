@@ -16,7 +16,7 @@ public class StatisticResult implements Result {
     private Accumulator accumulator;
 
     public StatisticResult() {
-        this(Integer.parseInt(LogCommandLineOptions.MATCH_LENGTH_DEFAULT));
+        this(Integer.parseInt(LogCommandLineOptions.COMPRESS_LENGTH_DEFAULT));
     }
 
     public StatisticResult(int compressDigitalLength) {
